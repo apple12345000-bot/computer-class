@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixlr 修圖教室 — 四年級電腦課</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #6C5CE7;
+  --primary-light: #A29BFE;
+  --secondary: #00CEC9;
+  --accent: #FDCB6E;
+  --success: #00B894;
+  --error: #FF7675;
+  --warning: #E17055;
+  --bg: #F0F3F8;
+  --card: #FFFFFF;
+  --text: #2D3436;
+  --text-light: #636E72;
+  --shadow: 0 4px 20px rgba(0,0,0,0.08);
+  --shadow-hover: 0 8px 30px rgba(108,92,231,0.18);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ===== NAV ===== */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index:1000;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(108,92,231,0.1);
+  padding: 0 20px;
+}
+.nav-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px;
+}
+.nav-logo { font-weight: 900; font-size: 1.2rem; color: var(--primary); }
+.nav-links { display: flex; gap: 6px; flex-wrap: wrap; }
+.nav-links a {
+  text-decoration: none; color: var(--text-light);
+  font-size: 0.85rem; font-weight: 500;
+  padding: 6px 14px; border-radius: 20px;
+  transition: all 0.3s;
+}
+.nav-links a:hover, .nav-links a.active {
+  background: var(--primary); color: #fff;
+}
+.progress-bar-container {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+  background: rgba(108,92,231,0.1);
+}
+.progress-bar {
+  height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--secondary));
+  transition: width 0.5s ease;
+}
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 100px 20px 60px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.08) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(255,255,255,0.05) 0%, transparent 40%);
+  animation: heroFloat 20s ease-in-out infinite;
+}
+@keyframes heroFloat {
+  0%,100% { transform: translate(0,0) rotate(0deg); }
+  50% { transform: translate(-20px,20px) rotate(2deg); }
+}
+.hero-content { position: relative; z-index: 1; max-width: 700px; }
+.hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 900; margin-bottom: 16px; }
+.hero p { font-size: 1.15rem; opacity: 0.9; margin-bottom: 32px; }
+.hero-stats {
+  display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;
+  margin-bottom: 36px;
+}
+.hero-stat {
+  background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+  padding: 14px 24px; border-radius: var(--radius-sm);
+  min-width: 100px;
+}
+.hero-stat .num { font-size: 1.8rem; font-weight: 900; }
+.hero-stat .label { font-size: 0.8rem; opacity: 0.8; }
+.btn {
+  display: inline-block; padding: 14px 36px;
+  background: var(--accent); color: var(--text);
+  font-weight: 700; font-size: 1.05rem;
+  border: none; border-radius: 50px; cursor: pointer;
+  text-decoration: none; transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(253,203,110,0.4);
+}
+.btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(253,203,110,0.5); }
+
+/* ===== SECTIONS ===== */
+section { padding: 80px 20px; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+.section-title {
+  text-align: center; margin-bottom: 50px;
+}
+.section-title h2 {
+  font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 900;
+  color: var(--primary); margin-bottom: 10px;
+}
+.section-title p { color: var(--text-light); font-size: 1rem; }
+.section-title .emoji { font-size: 2.5rem; display: block; margin-bottom: 10px; }
+
+/* ===== TOOL CATEGORIES ===== */
+.cat-tabs {
+  display: flex; justify-content: center; gap: 8px;
+  margin-bottom: 36px; flex-wrap: wrap;
+}
+.cat-tab {
+  padding: 10px 22px; border-radius: 50px;
+  background: var(--card); border: 2px solid #eee;
+  font-weight: 600; font-size: 0.9rem; cursor: pointer;
+  transition: all 0.3s; color: var(--text-light);
+}
+.cat-tab:hover { border-color: var(--primary-light); }
+.cat-tab.active {
+  background: var(--primary); color: #fff; border-color: var(--primary);
+}
+
+/* ===== TOOL CARDS ===== */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+.tool-card {
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow); overflow: hidden;
+  transition: all 0.4s cubic-bezier(.25,.8,.25,1);
+  cursor: pointer; position: relative;
+}
+.tool-card:hover {
+  transform: translateY(-6px); box-shadow: var(--shadow-hover);
+}
+.tool-card-header {
+  padding: 28px 24px 20px; display: flex; align-items: center; gap: 16px;
+}
+.tool-icon {
+  width: 56px; height: 56px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem; flex-shrink: 0;
+}
+.tool-card-header h3 { font-size: 1.15rem; font-weight: 700; }
+.tool-card-header .tool-tag {
+  font-size: 0.72rem; font-weight: 600; padding: 3px 10px;
+  border-radius: 20px; display: inline-block; margin-top: 4px;
+}
+.tool-card-body {
+  padding: 0 24px 24px;
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.5s ease, padding 0.3s ease;
+}
+.tool-card.open .tool-card-body {
+  max-height: 500px; padding: 0 24px 28px;
+}
+.tool-card-body p { font-size: 0.92rem; color: var(--text-light); margin-bottom: 12px; }
+.tool-card-body .use-case {
+  background: #F8F7FF; padding: 12px 16px; border-radius: var(--radius-sm);
+  border-left: 4px solid var(--primary-light);
+  font-size: 0.88rem;
+}
+.tool-card-body .lesson-badge {
+  display: inline-block; margin-top: 10px;
+  font-size: 0.78rem; font-weight: 600; padding: 4px 12px;
+  border-radius: 20px; background: #E8F5E9; color: #2E7D32;
+}
+.tool-card .expand-hint {
+  text-align: center; padding-bottom: 16px;
+  font-size: 0.78rem; color: var(--text-light); opacity: 0.6;
+}
+.tool-card.open .expand-hint { display: none; }
+
+/* Category colors */
+.cat-basic .tool-icon { background: #E8F5E9; }
+.cat-color .tool-icon { background: #FFF3E0; }
+.cat-creative .tool-icon { background: #E3F2FD; }
+.cat-ai .tool-icon { background: #F3E5F5; }
+.cat-basic .tool-tag { background: #E8F5E9; color: #2E7D32; }
+.cat-color .tool-tag { background: #FFF3E0; color: #E65100; }
+.cat-creative .tool-tag { background: #E3F2FD; color: #1565C0; }
+.cat-ai .tool-tag { background: #F3E5F5; color: #7B1FA2; }
+
+/* ===== FORMAT SECTION ===== */
+.format-section { background: #fff; }
+.format-cards {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px; margin-bottom: 40px;
+}
+.format-card {
+  border-radius: var(--radius); padding: 32px 24px;
+  text-align: center; transition: all 0.3s;
+  border: 3px solid transparent; cursor: pointer;
+  position: relative;
+}
+.format-card:hover { transform: translateY(-4px); }
+.format-card.jpg { background: linear-gradient(135deg, #FFEAA7 0%, #FFF9E6 100%); }
+.format-card.jpg:hover, .format-card.jpg.selected { border-color: #F39C12; }
+.format-card.png { background: linear-gradient(135deg, #81ECEC 0%, #E0FFFE 100%); }
+.format-card.png:hover, .format-card.png.selected { border-color: #00B894; }
+.format-card.gif { background: linear-gradient(135deg, #FD79A8 0%, #FFE4EE 100%); }
+.format-card.gif:hover, .format-card.gif.selected { border-color: #E84393; }
+.format-card .fmt-icon { font-size: 3rem; margin-bottom: 12px; }
+.format-card h3 { font-size: 1.5rem; font-weight: 900; margin-bottom: 6px; }
+.format-card .fmt-ext { font-size: 0.85rem; color: var(--text-light); margin-bottom: 16px; }
+.format-features {
+  text-align: left; margin-top: 16px;
+}
+.format-features li {
+  list-style: none; padding: 6px 0; font-size: 0.9rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.format-features .yes { color: var(--success); }
+.format-features .no { color: var(--error); }
+
+.format-motto {
+  text-align: center; padding: 28px; margin-top: 20px;
+  background: linear-gradient(135deg, var(--primary), #764ba2);
+  border-radius: var(--radius); color: #fff;
+}
+.format-motto .motto-text {
+  font-size: 1.5rem; font-weight: 900; letter-spacing: 2px;
+}
+.format-motto .motto-sub { font-size: 0.9rem; opacity: 0.8; margin-top: 8px; }
+
+/* ===== SCENARIO GAME ===== */
+.scenario-game { margin-top: 48px; }
+.scenario-game h3 { text-align: center; font-size: 1.3rem; margin-bottom: 24px; color: var(--primary); }
+.scenario-box {
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 32px;
+  text-align: center; max-width: 600px; margin: 0 auto;
+}
+.scenario-question {
+  font-size: 1.15rem; font-weight: 600; margin-bottom: 24px;
+  min-height: 60px; display: flex; align-items: center; justify-content: center;
+}
+.scenario-options { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.scenario-btn {
+  padding: 14px 28px; border-radius: var(--radius-sm);
+  font-weight: 700; font-size: 1.1rem; cursor: pointer;
+  border: 3px solid transparent; transition: all 0.3s;
+  min-width: 100px;
+}
+.scenario-btn.jpg-btn { background: #FFF9E6; color: #F39C12; border-color: #F39C12; }
+.scenario-btn.png-btn { background: #E0FFFE; color: #00B894; border-color: #00B894; }
+.scenario-btn.gif-btn { background: #FFE4EE; color: #E84393; border-color: #E84393; }
+.scenario-btn:hover { transform: scale(1.08); }
+.scenario-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.scenario-feedback {
+  margin-top: 20px; padding: 14px; border-radius: var(--radius-sm);
+  font-weight: 600; font-size: 0.95rem;
+  display: none;
+}
+.scenario-feedback.correct { display: block; background: #E8F5E9; color: #2E7D32; }
+.scenario-feedback.wrong { display: block; background: #FFEBEE; color: #C62828; }
+.scenario-score {
+  margin-top: 16px; font-size: 0.9rem; color: var(--text-light);
+}
+.scenario-next {
+  margin-top: 16px; padding: 10px 24px;
+  background: var(--primary); color: #fff;
+  border: none; border-radius: 50px; cursor: pointer;
+  font-weight: 600; font-size: 0.95rem;
+  display: none; transition: all 0.3s;
+}
+.scenario-next:hover { background: #5A4BD1; }
+
+/* ===== QUIZ ===== */
+.quiz-section { background: linear-gradient(180deg, #F8F7FF 0%, var(--bg) 100%); }
+.quiz-container { max-width: 700px; margin: 0 auto; }
+.quiz-progress {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 32px;
+}
+.quiz-progress-bar {
+  flex: 1; height: 10px; background: #E0E0E0; border-radius: 10px; overflow: hidden;
+}
+.quiz-progress-fill {
+  height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 10px; transition: width 0.5s ease;
+}
+.quiz-progress-text { font-weight: 700; font-size: 0.9rem; color: var(--primary); min-width: 60px; }
+.quiz-card {
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 36px;
+  animation: fadeInUp 0.4s ease;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.quiz-card .q-number {
+  font-size: 0.85rem; font-weight: 600; color: var(--primary);
+  margin-bottom: 12px;
+}
+.quiz-card .q-text {
+  font-size: 1.15rem; font-weight: 700; margin-bottom: 24px;
+  line-height: 1.6;
+}
+.quiz-options { display: flex; flex-direction: column; gap: 12px; }
+.quiz-option {
+  padding: 16px 20px; border: 2px solid #E0E0E0;
+  border-radius: var(--radius-sm); cursor: pointer;
+  transition: all 0.3s; font-size: 1rem;
+  display: flex; align-items: center; gap: 12px;
+}
+.quiz-option:hover { border-color: var(--primary-light); background: #F8F7FF; }
+.quiz-option .opt-letter {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: #F0F0F0; display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.9rem; flex-shrink: 0;
+  transition: all 0.3s;
+}
+.quiz-option:hover .opt-letter { background: var(--primary-light); color: #fff; }
+.quiz-option.correct {
+  border-color: var(--success); background: #E8F5E9;
+  pointer-events: none;
+}
+.quiz-option.correct .opt-letter { background: var(--success); color: #fff; }
+.quiz-option.wrong {
+  border-color: var(--error); background: #FFEBEE;
+  pointer-events: none;
+}
+.quiz-option.wrong .opt-letter { background: var(--error); color: #fff; }
+.quiz-option.disabled { pointer-events: none; opacity: 0.5; }
+.quiz-explain {
+  margin-top: 20px; padding: 16px; border-radius: var(--radius-sm);
+  font-size: 0.92rem; display: none;
+}
+.quiz-explain.show { display: block; }
+.quiz-explain.correct-explain { background: #E8F5E9; color: #2E7D32; border-left: 4px solid var(--success); }
+.quiz-explain.wrong-explain { background: #FFEBEE; color: #C62828; border-left: 4px solid var(--error); }
+.quiz-next-btn {
+  display: none; margin-top: 24px; padding: 12px 32px;
+  background: var(--primary); color: #fff; border: none;
+  border-radius: 50px; cursor: pointer; font-weight: 600;
+  font-size: 1rem; transition: all 0.3s; width: 100%;
+}
+.quiz-next-btn:hover { background: #5A4BD1; }
+.quiz-next-btn.show { display: block; }
+
+/* ===== QUIZ RESULT ===== */
+.quiz-result {
+  display: none; text-align: center; padding: 48px 32px;
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.quiz-result.show { display: block; animation: fadeInUp 0.5s ease; }
+.result-emoji { font-size: 4rem; margin-bottom: 16px; }
+.result-title { font-size: 1.8rem; font-weight: 900; color: var(--primary); margin-bottom: 8px; }
+.result-score { font-size: 3rem; font-weight: 900; color: var(--accent); margin: 16px 0; }
+.result-msg { font-size: 1rem; color: var(--text-light); margin-bottom: 24px; line-height: 1.8; }
+.result-stars { font-size: 2rem; margin-bottom: 24px; letter-spacing: 6px; }
+.result-details { margin-top: 24px; text-align: left; }
+.result-details summary {
+  cursor: pointer; font-weight: 600; color: var(--primary);
+  padding: 10px 0;
+}
+.result-item {
+  padding: 10px 16px; border-radius: 8px; margin: 6px 0;
+  font-size: 0.9rem; display: flex; align-items: center; gap: 10px;
+}
+.result-item.ri-correct { background: #E8F5E9; }
+.result-item.ri-wrong { background: #FFEBEE; }
+.btn-restart {
+  padding: 14px 36px; background: var(--primary); color: #fff;
+  border: none; border-radius: 50px; cursor: pointer;
+  font-weight: 700; font-size: 1rem; transition: all 0.3s;
+}
+.btn-restart:hover { background: #5A4BD1; transform: translateY(-2px); }
+
+/* ===== MISSIONS ===== */
+.missions-section { background: #fff; }
+.mission-list { max-width: 700px; margin: 0 auto; }
+.mission-item {
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 24px 28px;
+  margin-bottom: 16px; display: flex; align-items: flex-start; gap: 16px;
+  transition: all 0.3s; border-left: 4px solid #E0E0E0;
+}
+.mission-item.checked { border-left-color: var(--success); background: #FAFFF9; }
+.mission-check {
+  width: 28px; height: 28px; border: 2px solid #CCC;
+  border-radius: 50%; cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s; margin-top: 2px;
+}
+.mission-check:hover { border-color: var(--success); }
+.mission-item.checked .mission-check {
+  background: var(--success); border-color: var(--success); color: #fff;
+}
+.mission-text h4 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+.mission-text p { font-size: 0.88rem; color: var(--text-light); }
+.mission-counter {
+  text-align: center; margin-top: 32px;
+  font-size: 1rem; font-weight: 600; color: var(--primary);
+}
+
+/* ===== TIPS ===== */
+.tips-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px; margin-top: 40px;
+}
+.tip-card {
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 24px;
+}
+.tip-card .tip-icon { font-size: 2rem; margin-bottom: 10px; }
+.tip-card h4 { font-weight: 700; margin-bottom: 8px; }
+.tip-card p { font-size: 0.9rem; color: var(--text-light); }
+
+/* ===== FOOTER ===== */
+footer {
+  text-align: center; padding: 40px 20px;
+  background: var(--primary); color: rgba(255,255,255,0.8);
+  font-size: 0.85rem;
+}
+footer .footer-emoji { font-size: 1.5rem; margin-bottom: 8px; }
+
+/* ===== CONFETTI ===== */
+.confetti-canvas {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 9999;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hero { padding: 80px 16px 40px; }
+  .hero-stats { gap: 12px; }
+  .hero-stat { padding: 10px 16px; min-width: 80px; }
+  section { padding: 50px 16px; }
+  .tools-grid { grid-template-columns: 1fr; }
+  .format-cards { grid-template-columns: 1fr; }
+  .quiz-card { padding: 24px 20px; }
+  .cat-tabs { gap: 6px; }
+  .cat-tab { padding: 8px 14px; font-size: 0.8rem; }
+}
+
+/* ===== SCROLL ANIMATIONS ===== */
+.animate-in {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.animate-in.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">🎨 Pixlr 修圖教室</div>
+    <div class="nav-links">
+      <a href="#tools" class="nav-link">🧰 工具圖鑑</a>
+      <a href="#formats" class="nav-link">📁 格式教室</a>
+      <a href="#scenario" class="nav-link">🎮 情境挑戰</a>
+      <a href="#quiz" class="nav-link">📝 測驗</a>
+      <a href="#missions" class="nav-link">🎯 學習任務</a>
+    </div>
+  </div>
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="scrollProgress"></div>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <h1>🖌️ 歡迎來到<br>Pixlr 修圖教室</h1>
+    <p>四年級電腦課專屬互動學習站！<br>認識每一個修圖工具，學會圖片格式觀念，挑戰測驗拿滿分！</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="num">12</div>
+        <div class="label">個修圖工具</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">3</div>
+        <div class="label">種圖片格式</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">15</div>
+        <div class="label">題挑戰測驗</div>
+      </div>
+    </div>
+    <a href="#tools" class="btn">🚀 開始學習</a>
+  </div>
+</section>
+
+<!-- ===== TOOLS SECTION ===== -->
+<section id="tools">
+  <div class="section-inner">
+    <div class="section-title animate-in">
+      <span class="emoji">🧰</span>
+      <h2>Pixlr 工具大圖鑑</h2>
+      <p>點擊卡片展開詳細說明，認識每一個修圖工具的用途！</p>
+    </div>
+
+    <div class="cat-tabs" id="catTabs">
+      <div class="cat-tab active" data-cat="all">全部工具</div>
+      <div class="cat-tab" data-cat="basic">🔧 基礎操作</div>
+      <div class="cat-tab" data-cat="color">🎨 調色修圖</div>
+      <div class="cat-tab" data-cat="creative">✏️ 創意工具</div>
+      <div class="cat-tab" data-cat="ai">🤖 AI 魔法</div>
+    </div>
+
+    <div class="tools-grid" id="toolsGrid">
+      <!-- Cards injected by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ===== FORMAT SECTION ===== -->
+<section id="formats" class="format-section">
+  <div class="section-inner">
+    <div class="section-title animate-in">
+      <span class="emoji">📁</span>
+      <h2>圖片格式教室</h2>
+      <p>搞懂 JPG、PNG、GIF 三種格式的差別，存檔再也不會選錯！</p>
+    </div>
+
+    <div class="format-cards animate-in">
+      <div class="format-card jpg" onclick="this.classList.toggle('selected')">
+        <div class="fmt-icon">📸</div>
+        <h3>JPG</h3>
+        <div class="fmt-ext">.jpg / .jpeg</div>
+        <ul class="format-features">
+          <li><span class="yes">✅</span> 適合照片和風景圖</li>
+          <li><span class="yes">✅</span> 檔案小，傳送快</li>
+          <li><span class="no">❌</span> 不能透明背景</li>
+          <li><span class="no">❌</span> 不能做動畫</li>
+          <li>🏷️ 用過的課：名片(圖4)、明信片(圖5)</li>
+        </ul>
+      </div>
+      <div class="format-card png" onclick="this.classList.toggle('selected')">
+        <div class="fmt-icon">🖼️</div>
+        <h3>PNG</h3>
+        <div class="fmt-ext">.png</div>
+        <ul class="format-features">
+          <li><span class="yes">✅</span> 可以透明背景！</li>
+          <li><span class="yes">✅</span> 畫質清晰不模糊</li>
+          <li><span class="no">⚠️</span> 檔案比 JPG 大</li>
+          <li><span class="no">❌</span> 不能做動畫</li>
+          <li>🏷️ 用過的課：去背主角(圖2)</li>
+        </ul>
+      </div>
+      <div class="format-card gif" onclick="this.classList.toggle('selected')">
+        <div class="fmt-icon">🎞️</div>
+        <h3>GIF</h3>
+        <div class="fmt-ext">.gif</div>
+        <ul class="format-features">
+          <li><span class="yes">✅</span> 可以做動畫會動！</li>
+          <li><span class="yes">✅</span> 可以透明背景</li>
+          <li><span class="no">⚠️</span> 顏色只有 256 色</li>
+          <li><span class="no">❌</span> 不適合存照片</li>
+          <li>🏷️ 用過的課：找動圖(圖1)、自製(圖3)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="format-motto animate-in">
+      <div class="motto-text">📣 格式口訣：照片 J、去背 P、會動 G</div>
+      <div class="motto-sub">J = JPG ｜ P = PNG ｜ G = GIF &nbsp; 記住這句就不會選錯啦！</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SCENARIO GAME ===== -->
+<section id="scenario">
+  <div class="section-inner">
+    <div class="section-title animate-in">
+      <span class="emoji">🎮</span>
+      <h2>情境挑戰：選對格式！</h2>
+      <p>看完情境，選出正確的圖片格式，看看你能答對幾題！</p>
+    </div>
+    <div class="scenario-box animate-in" id="scenarioBox">
+      <div class="scenario-question" id="scenarioQ"></div>
+      <div class="scenario-options" id="scenarioOpts">
+        <button class="scenario-btn jpg-btn" onclick="checkScenario('JPG')">JPG</button>
+        <button class="scenario-btn png-btn" onclick="checkScenario('PNG')">PNG</button>
+        <button class="scenario-btn gif-btn" onclick="checkScenario('GIF')">GIF</button>
+      </div>
+      <div class="scenario-feedback" id="scenarioFb"></div>
+      <div class="scenario-score" id="scenarioScore"></div>
+      <button class="scenario-next" id="scenarioNext" onclick="nextScenario()">下一題 ➡️</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== QUIZ SECTION ===== -->
+<section id="quiz" class="quiz-section">
+  <div class="section-inner">
+    <div class="section-title animate-in">
+      <span class="emoji">📝</span>
+      <h2>Pixlr 修圖大挑戰</h2>
+      <p>總共 15 題，測試你對所有修圖工具和圖片觀念的理解！</p>
+    </div>
+    <div class="quiz-container">
+      <div class="quiz-progress" id="quizProgress">
+        <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizFill"></div></div>
+        <div class="quiz-progress-text" id="quizProgressText">1 / 15</div>
+      </div>
+      <div class="quiz-card" id="quizCard">
+        <div class="q-number" id="qNumber"></div>
+        <div class="q-text" id="qText"></div>
+        <div class="quiz-options" id="qOptions"></div>
+        <div class="quiz-explain" id="qExplain"></div>
+        <button class="quiz-next-btn" id="qNextBtn" onclick="nextQuestion()">下一題 ➡️</button>
+      </div>
+      <div class="quiz-result" id="quizResult"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MISSIONS SECTION ===== -->
+<section id="missions" class="missions-section">
+  <div class="section-inner">
+    <div class="section-title animate-in">
+      <span class="emoji">🎯</span>
+      <h2>學習任務清單</h2>
+      <p>完成以下任務，確認你已經掌握所有修圖基本功！</p>
+    </div>
+    <div class="mission-list" id="missionList"></div>
+    <div class="mission-counter" id="missionCounter"></div>
+
+    <div class="tips-grid animate-in">
+      <div class="tip-card">
+        <div class="tip-icon">💾</div>
+        <h4>存檔好習慣</h4>
+        <p>修圖完畢記得另存新檔，不要直接蓋掉原圖。檔名取有意義的名稱，方便日後查找！</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🔒</div>
+        <h4>鎖定比例很重要</h4>
+        <p>調整圖片大小時，一定要勾選「鎖定比例」，否則圖片會被壓扁或拉寬！</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">↩️</div>
+        <h4>Ctrl+Z 是你的好朋友</h4>
+        <p>做錯了不要緊！按 Ctrl+Z 就能復原上一步，可以連按好幾次回到之前的狀態。</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">👑</div>
+        <h4>避開皇冠付費素材</h4>
+        <p>在 Pixlr 和 Canva 中，看到皇冠 👑 標誌的素材代表要付費，請選擇免費的素材！</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-emoji">🎨✏️🖌️</div>
+  <p>Pixlr 修圖教室 — 四年級電腦課互動學習站</p>
+  <p style="margin-top:4px;opacity:0.6;">祝你成為修圖小達人！💪</p>
+</footer>
+
+<canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+
+<script>
+// ===== TOOL DATA =====
+const tools = [
+  {
+    id:'crop', cat:'basic', icon:'✂️', name:'裁切 Crop',
+    desc:'剪掉圖片中不需要的邊緣部分，只留下你想要的範圍。就像用剪刀把照片多餘的部分剪掉一樣！',
+    useCase:'💡 什麼時候用？照片邊邊有不想要的東西、想把圖片變成正方形、只想留住畫面中的某一個部分。',
+    lesson:'圖片5B 新學'
+  },
+  {
+    id:'rotate', cat:'basic', icon:'🔄', name:'旋轉與翻轉',
+    desc:'把圖片轉 90 度、180 度，或者水平翻轉（左右相反）、垂直翻轉（上下顛倒）。',
+    useCase:'💡 什麼時候用？圖片方向歪了、想讓角色面向另一邊、照片拿反了需要轉正。',
+    lesson:'圖片5B 新學'
+  },
+  {
+    id:'resize', cat:'basic', icon:'📐', name:'調整大小 Resize',
+    desc:'放大或縮小整張圖片的尺寸。⚠️ 一定要記得勾選「鎖定比例 🔒」，否則圖片會被壓扁！',
+    useCase:'💡 什麼時候用？圖片太大傳不出去、需要特定尺寸（如 800×600）、想讓檔案變小一點。',
+    lesson:'圖片5B 新學'
+  },
+  {
+    id:'brightness', cat:'color', icon:'☀️', name:'亮度與對比',
+    desc:'亮度：讓整張圖變亮或變暗。對比：讓亮的地方更亮、暗的地方更暗，讓畫面更有層次感。',
+    useCase:'💡 什麼時候用？照片太暗看不清楚、拍照時光線不足、想讓照片看起來更清晰。',
+    lesson:'圖片5 已學'
+  },
+  {
+    id:'saturation', cat:'color', icon:'🎨', name:'飽和度 / 鮮豔度',
+    desc:'控制圖片顏色的鮮豔程度。調高讓顏色更鮮豔繽紛，調低讓顏色變淡，調到最低就會變成黑白照片！',
+    useCase:'💡 什麼時候用？想讓天空更藍、草地更綠、想做出復古淡色風格、想把照片變成黑白。',
+    lesson:'圖片5 已學'
+  },
+  {
+    id:'filter', cat:'color', icon:'🪄', name:'濾鏡 / 效果',
+    desc:'一鍵幫圖片套上不同的視覺風格，像幫照片戴上不同的魔法眼鏡！',
+    useCase:'💡 什麼時候用？想把照片變成復古懷舊風、溫暖日系風、冷調科幻風、黑白底片感覺。',
+    lesson:'圖片5 已學'
+  },
+  {
+    id:'text', cat:'creative', icon:'🔤', name:'文字工具',
+    desc:'在圖片上加入文字。可以選擇字體、大小、顏色，還能調整文字的位置和角度。',
+    useCase:'💡 什麼時候用？做明信片加心情短語、在圖片上加標題、幫圖片加上你的簽名。',
+    lesson:'圖片5 已學'
+  },
+  {
+    id:'brush', cat:'creative', icon:'✏️', name:'畫筆 Brush',
+    desc:'像真的筆一樣在圖片上自由繪畫。可以調整畫筆的粗細、透明度和顏色。',
+    useCase:'💡 什麼時候用？在圖上畫圈圈標記重點、自由塗鴉裝飾、手繪你的專屬簽名。',
+    lesson:'圖片5B 新學'
+  },
+  {
+    id:'eraser', cat:'creative', icon:'🧹', name:'橡皮擦 Eraser',
+    desc:'擦掉圖片上不要的部分。如果是 PNG 格式，擦掉的地方會變成透明；如果是 JPG，會變成白色。',
+    useCase:'💡 什麼時候用？手動擦掉去背沒擦乾淨的小邊邊、擦掉圖片上不要的小瑕疵。',
+    lesson:'圖片5B 新學'
+  },
+  {
+    id:'select', cat:'creative', icon:'🔲', name:'選取工具',
+    desc:'在圖片上框選一個區域，可以用矩形或自由形狀選取。選取後可以複製、移動、刪除那塊區域。',
+    useCase:'💡 什麼時候用？想複製圖片中的某一小塊、只想對圖片的某個部分做修改、想把選取區域貼到別的地方。',
+    lesson:'圖片5B 新學'
+  },
+  {
+    id:'removebg', cat:'ai', icon:'🤖', name:'AI 去背 Remove BG',
+    desc:'超強的 AI 魔法！只要上傳圖片，AI 就會自動辨識主角，把背景整個移除掉，留下透明背景的主角。',
+    useCase:'💡 什麼時候用？想把人物或角色從背景中挖出來、要做合成圖片、想讓主角可以放到任何新背景上。',
+    lesson:'圖片2 已學'
+  },
+  {
+    id:'layers', cat:'ai', icon:'📑', name:'圖層 Layers',
+    desc:'像一疊透明的玻璃片疊在一起！每一層可以放不同的東西（主角、背景、文字），互不干擾，可以分別移動和編輯。',
+    useCase:'💡 什麼時候用？去背後把主角放到新背景上、同時在圖片上加文字和圖案但想分開管理。',
+    lesson:'圖片2 已學'
+  }
+];
+
+// ===== SCENARIO DATA =====
+const scenarios = [
+  { q:'📸 你用手機拍了一張漂亮的夕陽風景照，修完顏色後要存檔，該選什麼格式？', a:'JPG', hint:'風景照片適合用 JPG，檔案小又夠清楚！' },
+  { q:'✂️ 你用 Pixlr 把你的照片去背好了，要存檔保留透明背景，該選什麼格式？', a:'PNG', hint:'只有 PNG 可以保留透明背景！' },
+  { q:'🎬 你用 Canva 做了一個會動的表情貼圖，下載時該選什麼格式？', a:'GIF', hint:'會動的圖片就是 GIF！千萬別選成 MP4 喔！' },
+  { q:'🪪 你在 Canva 設計好了一張個人名片，要下載成圖片。該選什麼格式？', a:'JPG', hint:'名片是靜態平面圖片，用 JPG 或 PNG 都可以，JPG 檔案更小！' },
+  { q:'🎭 你想把去背好的角色放到新的背景上合成，去背圖要存成什麼格式？', a:'PNG', hint:'去背圖一定要存 PNG，才能保留透明背景用來合成！' },
+  { q:'📱 你從網路上找到一個會動的可愛柴犬，要下載下來，它是什麼格式？', a:'GIF', hint:'會動的圖片 = GIF！記得搜尋時要選「動態」類型。' },
+  { q:'💌 你修好了一張心情明信片，要上傳到 Classroom 繳交作業，該存什麼格式？', a:'JPG', hint:'明信片是靜態照片類的作品，用 JPG 最合適！' },
+  { q:'🖥️ 你用 Win+Shift+S 截了一張螢幕畫面，想保留最清晰的品質，該存什麼格式？', a:'PNG', hint:'截圖適合用 PNG，畫質最清晰！' }
+];
+
+// ===== QUIZ DATA =====
+const quizData = [
+  {
+    q:'裁切工具（Crop）的功能是什麼？',
+    opts:['把圖片變成黑白','剪掉圖片不需要的邊緣','讓圖片會動','在圖片上加文字'],
+    ans:1, explain:'裁切就像剪紙，把不要的邊邊剪掉，只留下你想要的部分。'
+  },
+  {
+    q:'去背後的圖片應該存成哪種格式，才能保留透明背景？',
+    opts:['JPG','MP4','PNG','GIF'],
+    ans:2, explain:'只有 PNG 格式可以保存透明背景！JPG 會自動把透明填成白色。'
+  },
+  {
+    q:'調整圖片大小時，一定要記得勾選什麼？',
+    opts:['自動儲存','鎖定比例','高畫質模式','黑白模式'],
+    ans:1, explain:'如果沒有勾選「鎖定比例 🔒」，圖片就會被壓扁或拉寬，變形走樣！'
+  },
+  {
+    q:'會動的圖片（像 LINE 表情貼圖那種）是什麼格式？',
+    opts:['JPG','PNG','PDF','GIF'],
+    ans:3, explain:'GIF 格式可以儲存多張圖片輪播，就像翻頁動畫一樣讓圖片動起來！'
+  },
+  {
+    q:'想讓照片顏色更鮮豔，天空更藍、草地更綠，應該調整什麼？',
+    opts:['裁切','飽和度','橡皮擦','旋轉'],
+    ans:1, explain:'飽和度就是控制顏色的「鮮豔程度」，調高讓顏色更漂亮！'
+  },
+  {
+    q:'在 PNG 格式下，橡皮擦擦掉的部分會變成什麼？',
+    opts:['白色','黑色','透明','紅色'],
+    ans:2, explain:'在 PNG 格式下，橡皮擦擦掉的部分會變成透明（像玻璃一樣看得到後面）！'
+  },
+  {
+    q:'拍的風景照修完通常存成什麼格式最合適？',
+    opts:['GIF','PNG','JPG','MP4'],
+    ans:2, explain:'照片類的圖片最適合存成 JPG，因為檔案小又足夠清楚！口訣：照片 J！'
+  },
+  {
+    q:'想在圖片上寫一句話，應該用什麼工具？',
+    opts:['裁切工具','橡皮擦','文字工具','選取工具'],
+    ans:2, explain:'文字工具（T）可以在圖片上打字，還能選字體、大小和顏色！'
+  },
+  {
+    q:'想把圖片水平翻轉（左右相反），要用什麼功能？',
+    opts:['裁切','旋轉與翻轉','調整大小','濾鏡'],
+    ans:1, explain:'旋轉與翻轉功能可以把圖片轉方向或鏡像翻轉！'
+  },
+  {
+    q:'Pixlr 的 AI 去背功能可以做什麼？',
+    opts:['讓圖片變大','自動移除圖片的背景','加上藝術文字','調整圖片亮度'],
+    ans:1, explain:'AI 去背會自動辨識圖片中的主角，把背景整個擦掉，留下透明背景！'
+  },
+  {
+    q:'圖層（Layers）的概念就像什麼？',
+    opts:['把很多張透明片疊在一起','把圖片剪成小塊','讓圖片會動','把圖片壓縮變小'],
+    ans:0, explain:'圖層就像一疊透明玻璃片，每層放不同東西（主角、背景、文字），互不干擾！'
+  },
+  {
+    q:'照片太暗了看不清楚，應該調高什麼數值？',
+    opts:['飽和度','亮度','裁切範圍','橡皮擦大小'],
+    ans:1, explain:'亮度可以讓整張圖片變亮，把太暗的照片救回來！'
+  },
+  {
+    q:'以下哪一個「不是」Pixlr 的工具？',
+    opts:['裁切','畫筆','投影片','橡皮擦'],
+    ans:2, explain:'投影片是 Google 簡報（Slides）的功能，不是 Pixlr 修圖工具喔！'
+  },
+  {
+    q:'使用「選取工具」框選圖片的一部分後，按 Ctrl+C 再按 Ctrl+V 會怎樣？',
+    opts:['圖片會被刪除','選取的部分被複製成新的一層','圖片會旋轉','圖片會存檔'],
+    ans:1, explain:'Ctrl+C 是複製、Ctrl+V 是貼上，選取的區域會被複製成一個新圖層！'
+  },
+  {
+    q:'格式口訣「照片 J、去背 P、會動 G」，其中 P 代表什麼格式？',
+    opts:['PDF','PPT','PNG','PSD'],
+    ans:2, explain:'P 就是 PNG！去背圖一定要存 PNG 才能保留透明背景。照片 J(PG)、去背 P(NG)、會動 G(IF)！'
+  }
+];
+
+// ===== MISSIONS DATA =====
+const missions = [
+  { title:'認識所有 12 個 Pixlr 工具', desc:'瀏覽上方工具圖鑑，點開每張卡片讀完說明。' },
+  { title:'記住圖片格式口訣', desc:'照片 J、去背 P、會動 G — 試著不看螢幕背出來！' },
+  { title:'情境挑戰全部答對', desc:'完成格式情境挑戰，8 題全數答對。' },
+  { title:'修圖測驗拿到 12 分以上', desc:'完成 15 題挑戰測驗，至少答對 12 題。' },
+  { title:'會用裁切工具', desc:'打開 Pixlr，把一張圖片裁切成正方形 (1:1)。' },
+  { title:'會調整圖片大小', desc:'在 Pixlr 中把圖片寬度調整為 800，記得鎖定比例！' },
+  { title:'會使用旋轉與翻轉', desc:'把一張圖片旋轉 90 度，再試試水平翻轉。' },
+  { title:'會使用畫筆和文字', desc:'用畫筆在圖片上畫圖案，用文字工具加上你的名字。' },
+  { title:'會使用 Win+Shift+S 截圖', desc:'使用 Windows 截圖工具截一張螢幕畫面並存檔。' },
+  { title:'正確存檔格式', desc:'能根據不同情況選擇 JPG、PNG 或 GIF 存檔。' }
+];
+
+// ===== RENDER TOOLS =====
+function renderTools(cat) {
+  const grid = document.getElementById('toolsGrid');
+  const filtered = cat === 'all' ? tools : tools.filter(t => t.cat === cat);
+  grid.innerHTML = filtered.map(t => `
+    <div class="tool-card cat-${t.cat} animate-in visible" onclick="this.classList.toggle('open')" data-cat="${t.cat}">
+      <div class="tool-card-header">
+        <div class="tool-icon">${t.icon}</div>
+        <div>
+          <h3>${t.name}</h3>
+          <span class="tool-tag">${
+            t.cat==='basic'?'🔧 基礎操作':
+            t.cat==='color'?'🎨 調色修圖':
+            t.cat==='creative'?'✏️ 創意工具':'🤖 AI 魔法'
+          }</span>
+        </div>
+      </div>
+      <div class="expand-hint">👆 點擊展開詳細說明</div>
+      <div class="tool-card-body">
+        <p>${t.desc}</p>
+        <div class="use-case">${t.useCase}</div>
+        <span class="lesson-badge">📖 ${t.lesson}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== CATEGORY TABS =====
+document.getElementById('catTabs').addEventListener('click', e => {
+  if (!e.target.classList.contains('cat-tab')) return;
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+  e.target.classList.add('active');
+  renderTools(e.target.dataset.cat);
+});
+
+// ===== SCENARIO GAME =====
+let scenarioIdx = 0, scenarioCorrect = 0;
+function loadScenario() {
+  if (scenarioIdx >= scenarios.length) {
+    document.getElementById('scenarioQ').textContent = `🏆 挑戰結束！你答對了 ${scenarioCorrect} / ${scenarios.length} 題！`;
+    document.getElementById('scenarioOpts').style.display = 'none';
+    document.getElementById('scenarioNext').style.display = 'none';
+    document.getElementById('scenarioFb').className = 'scenario-feedback correct';
+    document.getElementById('scenarioFb').textContent = scenarioCorrect === scenarios.length
+      ? '🎉 滿分！你是格式小達人！'
+      : `加油！再多練習就能全對了！`;
+    document.getElementById('scenarioFb').style.display = 'block';
+    if (scenarioCorrect === scenarios.length) launchConfetti();
+    return;
+  }
+  const s = scenarios[scenarioIdx];
+  document.getElementById('scenarioQ').textContent = `第 ${scenarioIdx+1}/${scenarios.length} 題：${s.q}`;
+  document.getElementById('scenarioFb').style.display = 'none';
+  document.getElementById('scenarioNext').style.display = 'none';
+  document.getElementById('scenarioOpts').style.display = 'flex';
+  document.querySelectorAll('.scenario-btn').forEach(b => { b.disabled = false; });
+  document.getElementById('scenarioScore').textContent = `目前答對：${scenarioCorrect} 題`;
+}
+function checkScenario(ans) {
+  const s = scenarios[scenarioIdx];
+  const fb = document.getElementById('scenarioFb');
+  document.querySelectorAll('.scenario-btn').forEach(b => { b.disabled = true; });
+  if (ans === s.a) {
+    scenarioCorrect++;
+    fb.className = 'scenario-feedback correct';
+    fb.textContent = `✅ 正確！${s.hint}`;
+  } else {
+    fb.className = 'scenario-feedback wrong';
+    fb.textContent = `❌ 答案是 ${s.a}！${s.hint}`;
+  }
+  fb.style.display = 'block';
+  document.getElementById('scenarioScore').textContent = `目前答對：${scenarioCorrect} 題`;
+  document.getElementById('scenarioNext').style.display = 'inline-block';
+}
+function nextScenario() {
+  scenarioIdx++;
+  loadScenario();
+}
+
+// ===== QUIZ LOGIC =====
+let qIdx = 0, qScore = 0, qAnswers = [];
+function loadQuestion() {
+  if (qIdx >= quizData.length) { showResult(); return; }
+  const q = quizData[qIdx];
+  document.getElementById('qNumber').textContent = `第 ${qIdx+1} 題，共 ${quizData.length} 題`;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('quizFill').style.width = ((qIdx)/quizData.length*100)+'%';
+  document.getElementById('quizProgressText').textContent = `${qIdx+1} / ${quizData.length}`;
+  const letters = ['A','B','C','D'];
+  document.getElementById('qOptions').innerHTML = q.opts.map((o,i) => `
+    <div class="quiz-option" onclick="selectAnswer(${i})">
+      <span class="opt-letter">${letters[i]}</span>
+      <span>${o}</span>
+    </div>
+  `).join('');
+  document.getElementById('qExplain').className = 'quiz-explain';
+  document.getElementById('qExplain').textContent = '';
+  document.getElementById('qNextBtn').className = 'quiz-next-btn';
+  // Re-animate
+  const card = document.getElementById('quizCard');
+  card.style.animation = 'none';
+  card.offsetHeight;
+  card.style.animation = 'fadeInUp 0.4s ease';
+}
+function selectAnswer(idx) {
+  const q = quizData[qIdx];
+  const opts = document.querySelectorAll('.quiz-option');
+  opts.forEach((o,i) => {
+    if (i === q.ans) o.classList.add('correct');
+    else if (i === idx && idx !== q.ans) o.classList.add('wrong');
+    else o.classList.add('disabled');
+  });
+  const correct = idx === q.ans;
+  if (correct) qScore++;
+  qAnswers.push({ q: q.q, correct, picked: q.opts[idx], answer: q.opts[q.ans] });
+  const ex = document.getElementById('qExplain');
+  ex.className = 'quiz-explain show ' + (correct ? 'correct-explain' : 'wrong-explain');
+  ex.textContent = (correct ? '✅ 答對了！' : '❌ 答錯了！正確答案是「' + q.opts[q.ans] + '」。') + ' ' + q.explain;
+  document.getElementById('qNextBtn').className = 'quiz-next-btn show';
+}
+function nextQuestion() {
+  qIdx++;
+  if (qIdx >= quizData.length) {
+    showResult();
+  } else {
+    loadQuestion();
+  }
+}
+function showResult() {
+  document.getElementById('quizCard').style.display = 'none';
+  document.getElementById('quizProgress').style.display = 'none';
+  const pct = qScore / quizData.length;
+  let emoji, title, msg, stars;
+  if (pct === 1) {
+    emoji = '🏆'; title = '滿分！超級修圖大師！';
+    msg = '太厲害了！所有題目都答對，你已經完全掌握了 Pixlr 修圖工具和圖片格式觀念！'; stars = '⭐⭐⭐⭐⭐';
+    launchConfetti();
+  } else if (pct >= 0.8) {
+    emoji = '🌟'; title = '太棒了！修圖高手！';
+    msg = '你的表現非常優秀！只差一點點就滿分了，再複習一下就更完美！'; stars = '⭐⭐⭐⭐';
+  } else if (pct >= 0.6) {
+    emoji = '👍'; title = '不錯喔！繼續努力！';
+    msg = '大部分觀念都有掌握了！回去看看答錯的題目，再挑戰一次吧！'; stars = '⭐⭐⭐';
+  } else {
+    emoji = '💪'; title = '加油！回去複習一下！';
+    msg = '有些觀念還需要多練習，建議回到上方重新閱讀工具圖鑑和格式教室，再來挑戰一次！'; stars = '⭐⭐';
+  }
+  const r = document.getElementById('quizResult');
+  r.innerHTML = `
+    <div class="result-emoji">${emoji}</div>
+    <div class="result-title">${title}</div>
+    <div class="result-stars">${stars}</div>
+    <div class="result-score">${qScore} / ${quizData.length}</div>
+    <div class="result-msg">${msg}</div>
+    <details class="result-details">
+      <summary>📋 查看每題答題紀錄</summary>
+      ${qAnswers.map((a,i) => `
+        <div class="result-item ${a.correct?'ri-correct':'ri-wrong'}">
+          <span>${a.correct?'✅':'❌'}</span>
+          <span>第${i+1}題：${a.q}<br>
+          ${a.correct?'':'你的答案：'+a.picked+' ➜ 正確答案：'+a.answer}</span>
+        </div>
+      `).join('')}
+    </details>
+    <br>
+    <button class="btn-restart" onclick="restartQuiz()">🔄 再挑戰一次</button>
+  `;
+  r.className = 'quiz-result show';
+}
+function restartQuiz() {
+  qIdx = 0; qScore = 0; qAnswers = [];
+  document.getElementById('quizCard').style.display = '';
+  document.getElementById('quizProgress').style.display = '';
+  document.getElementById('quizResult').className = 'quiz-result';
+  loadQuestion();
+}
+
+// ===== MISSIONS =====
+function renderMissions() {
+  const saved = JSON.parse(localStorage.getItem('pixlr_missions') || '[]');
+  const list = document.getElementById('missionList');
+  list.innerHTML = missions.map((m, i) => {
+    const checked = saved.includes(i);
+    return `
+      <div class="mission-item ${checked?'checked':''}" id="mi${i}">
+        <div class="mission-check" onclick="toggleMission(${i})">${checked?'✔':''}</div>
+        <div class="mission-text">
+          <h4>${m.title}</h4>
+          <p>${m.desc}</p>
+        </div>
+      </div>
+    `;
+  }).join('');
+  updateMissionCounter(saved.length);
+}
+function toggleMission(i) {
+  let saved = JSON.parse(localStorage.getItem('pixlr_missions') || '[]');
+  if (saved.includes(i)) saved = saved.filter(x => x !== i);
+  else saved.push(i);
+  localStorage.setItem('pixlr_missions', JSON.stringify(saved));
+  renderMissions();
+  if (saved.length === missions.length) launchConfetti();
+}
+function updateMissionCounter(n) {
+  document.getElementById('missionCounter').textContent =
+    n === missions.length ? '🎉 恭喜！所有任務完成！你是修圖小達人！' :
+    `已完成 ${n} / ${missions.length} 項任務`;
+}
+
+// ===== CONFETTI =====
+function launchConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors = ['#6C5CE7','#00CEC9','#FDCB6E','#FF7675','#00B894','#E84393','#FD79A8'];
+  const pieces = Array.from({length:150}, () => ({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height - canvas.height,
+    w: Math.random()*10+5, h: Math.random()*6+3,
+    color: colors[Math.floor(Math.random()*colors.length)],
+    vx: Math.random()*4-2, vy: Math.random()*4+2,
+    rot: Math.random()*360, vr: Math.random()*10-5
+  }));
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      p.vy += 0.05;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI/180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+    });
+    frame++;
+    if (frame < 180) requestAnimationFrame(draw);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  draw();
+}
+
+// ===== SCROLL PROGRESS =====
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = h > 0 ? (window.scrollY / h) * 100 : 0;
+  document.getElementById('scrollProgress').style.width = pct + '%';
+  // Active nav link
+  const sections = ['tools','formats','scenario','quiz','missions'];
+  let current = '';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 100) current = id;
+  });
+  document.querySelectorAll('.nav-link').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+
+// ===== SCROLL ANIMATIONS =====
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.animate-in').forEach(el => observer.observe(el));
+
+// ===== INIT =====
+renderTools('all');
+loadScenario();
+loadQuestion();
+renderMissions();
+</script>
+</body>
+</html>
