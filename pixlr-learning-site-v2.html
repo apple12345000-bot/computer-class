@@ -1,0 +1,2155 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixlr 修圖教室 — 四年級電腦課闖關版</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #6C5CE7;
+  --primary-dark: #5649C0;
+  --primary-light: #A29BFE;
+  --secondary: #00CEC9;
+  --accent: #FDCB6E;
+  --success: #00B894;
+  --error: #FF7675;
+  --warning: #E17055;
+  --bg: #F0F3F8;
+  --card: #FFFFFF;
+  --text: #2D3436;
+  --text-light: #636E72;
+  --shadow: 0 4px 20px rgba(0,0,0,0.08);
+  --shadow-hover: 0 8px 30px rgba(108,92,231,0.18);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  overflow-x: hidden;
+  padding-bottom: 60px;
+}
+
+/* ===== NAV ===== */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index:1000;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(108,92,231,0.12);
+  padding: 0 16px;
+}
+.nav-inner {
+  max-width: 1150px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px; gap: 12px;
+}
+.nav-logo {
+  font-weight: 900; font-size: 1.15rem; color: var(--primary);
+  display: flex; align-items: center; gap: 8px; white-space: nowrap;
+}
+.nav-links { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+.nav-links a {
+  text-decoration: none; color: var(--text-light);
+  font-size: 0.82rem; font-weight: 600;
+  padding: 6px 12px; border-radius: 20px;
+  transition: all 0.25s; display: flex; align-items: center; gap: 4px;
+}
+.nav-links a:hover, .nav-links a.active {
+  background: var(--primary); color: #fff;
+}
+.nav-links a .nav-done {
+  font-size: 0.72rem; display: none;
+}
+.nav-links a.completed .nav-done { display: inline; }
+
+.nav-right {
+  display: flex; align-items: center; gap: 8px; white-space: nowrap;
+}
+.student-pill {
+  background: #F4F2FF; color: var(--primary);
+  border: 1px solid #DCD6FF;
+  padding: 5px 12px; border-radius: 20px;
+  font-size: 0.82rem; font-weight: 700; cursor: pointer;
+  transition: all 0.2s;
+}
+.student-pill:hover { background: var(--primary); color: #fff; }
+.score-pill {
+  background: linear-gradient(135deg, #FDCB6E, #F39C12);
+  color: #2D3436; padding: 5px 12px; border-radius: 20px;
+  font-size: 0.82rem; font-weight: 900;
+}
+.sound-btn {
+  background: #eee; border: none; width: 34px; height: 34px;
+  border-radius: 50%; cursor: pointer; font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.sound-btn:hover { background: #ddd; }
+
+.progress-bar-container {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 4px;
+  background: rgba(108,92,231,0.1);
+}
+.progress-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+  transition: width 0.5s ease;
+}
+
+/* ===== GUIDE BANNER (FLOATING HELPER) ===== */
+.guide-bar {
+  position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+  z-index: 950; background: rgba(45,52,54,0.92); color: #fff;
+  backdrop-filter: blur(8px);
+  padding: 10px 20px; border-radius: 50px;
+  display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  font-size: 0.88rem; max-width: 92vw;
+  transition: all 0.3s;
+}
+.guide-bar .guide-go {
+  background: var(--accent); color: var(--text);
+  border: none; padding: 5px 14px; border-radius: 20px;
+  font-weight: 700; font-size: 0.82rem; cursor: pointer;
+  white-space: nowrap; transition: transform 0.2s;
+}
+.guide-bar .guide-go:hover { transform: scale(1.05); }
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 92vh; display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 95px 20px 60px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.08) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(255,255,255,0.05) 0%, transparent 40%);
+  animation: heroFloat 20s ease-in-out infinite;
+}
+@keyframes heroFloat {
+  0%,100% { transform: translate(0,0) rotate(0deg); }
+  50% { transform: translate(-20px,20px) rotate(2deg); }
+}
+.hero-content { position: relative; z-index: 1; max-width: 780px; width: 100%; }
+.hero h1 { font-size: clamp(2rem, 5vw, 3.1rem); font-weight: 900; margin-bottom: 12px; }
+.hero p { font-size: 1.08rem; opacity: 0.92; margin-bottom: 24px; }
+
+/* Student Login Box in Hero */
+.login-card {
+  background: rgba(255,255,255,0.96); color: var(--text);
+  border-radius: var(--radius); padding: 24px 28px;
+  max-width: 580px; margin: 0 auto 28px;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+  text-align: left;
+}
+.login-card h3 {
+  font-size: 1.05rem; color: var(--primary); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.login-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 12px;
+  margin-bottom: 16px;
+}
+.login-field label {
+  display: block; font-size: 0.78rem; font-weight: 700;
+  color: var(--text-light); margin-bottom: 4px;
+}
+.login-field input {
+  width: 100%; padding: 10px 12px; border: 2px solid #E0E0E0;
+  border-radius: 10px; font-size: 0.95rem; font-family: inherit;
+  transition: border-color 0.2s;
+}
+.login-field input:focus { outline: none; border-color: var(--primary); }
+
+/* Quest Roadmap */
+.roadmap {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;
+  margin: 0 auto 24px; max-width: 760px;
+}
+.road-step {
+  background: rgba(255,255,255,0.16); backdrop-filter: blur(8px);
+  padding: 12px 8px; border-radius: 12px; text-align: center;
+  cursor: pointer; transition: all 0.25s; border: 2px solid transparent;
+  text-decoration: none; color: #fff;
+}
+.road-step:hover { background: rgba(255,255,255,0.26); transform: translateY(-3px); }
+.road-step.done { border-color: var(--accent); background: rgba(0,184,148,0.35); }
+.road-step .rs-icon { font-size: 1.5rem; margin-bottom: 4px; }
+.road-step .rs-title { font-size: 0.78rem; font-weight: 700; }
+.road-step .rs-pts { font-size: 0.72rem; opacity: 0.88; margin-top: 2px; }
+
+.btn {
+  display: inline-block; padding: 13px 34px;
+  background: var(--accent); color: var(--text);
+  font-weight: 800; font-size: 1.02rem;
+  border: none; border-radius: 50px; cursor: pointer;
+  text-decoration: none; transition: all 0.25s;
+  box-shadow: 0 4px 15px rgba(253,203,110,0.4);
+  font-family: inherit;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(253,203,110,0.55); }
+.btn-primary {
+  background: var(--primary); color: #fff;
+  box-shadow: 0 4px 15px rgba(108,92,231,0.35);
+}
+.btn-primary:hover { background: var(--primary-dark); box-shadow: 0 8px 25px rgba(108,92,231,0.45); }
+.btn-success {
+  background: var(--success); color: #fff;
+  box-shadow: 0 4px 15px rgba(0,184,148,0.35);
+}
+.btn-success:hover { background: #009E7F; }
+
+/* ===== SECTIONS ===== */
+section { padding: 76px 20px; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+.section-title { text-align: center; margin-bottom: 42px; }
+.stage-badge {
+  display: inline-block; background: #EDE9FF; color: var(--primary);
+  font-size: 0.82rem; font-weight: 800; padding: 4px 16px;
+  border-radius: 20px; margin-bottom: 10px; letter-spacing: 1px;
+}
+.section-title h2 {
+  font-size: clamp(1.55rem, 4vw, 2.15rem); font-weight: 900;
+  color: var(--primary); margin-bottom: 8px;
+}
+.section-title p { color: var(--text-light); font-size: 0.98rem; }
+.section-next-wrap {
+  text-align: center; margin-top: 38px;
+}
+
+/* ===== TOOLS SECTION ===== */
+.explore-status {
+  max-width: 600px; margin: 0 auto 24px;
+  background: #fff; padding: 14px 20px; border-radius: 50px;
+  box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: 14px;
+}
+.explore-bar {
+  flex: 1; height: 12px; background: #ECEFF4; border-radius: 10px; overflow: hidden;
+}
+.explore-bar-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--secondary), var(--success));
+  transition: width 0.4s ease;
+}
+.explore-text { font-weight: 800; font-size: 0.88rem; color: var(--primary); white-space: nowrap; }
+
+.cat-tabs {
+  display: flex; justify-content: center; gap: 8px;
+  margin-bottom: 30px; flex-wrap: wrap;
+}
+.cat-tab {
+  padding: 9px 20px; border-radius: 50px;
+  background: var(--card); border: 2px solid #eee;
+  font-weight: 600; font-size: 0.88rem; cursor: pointer;
+  transition: all 0.25s; color: var(--text-light);
+}
+.cat-tab:hover { border-color: var(--primary-light); }
+.cat-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+.tools-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+.tool-card {
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow); overflow: hidden;
+  transition: all 0.35s cubic-bezier(.25,.8,.25,1);
+  cursor: pointer; position: relative; border: 2px solid transparent;
+}
+.tool-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+.tool-card.explored { border-color: rgba(0,184,148,0.45); }
+.explored-stamp {
+  position: absolute; top: 14px; right: 14px;
+  background: #E8F5E9; color: #2E7D32;
+  font-size: 0.72rem; font-weight: 800; padding: 3px 10px;
+  border-radius: 20px; display: none;
+}
+.tool-card.explored .explored-stamp { display: inline-block; }
+
+.tool-card-header {
+  padding: 24px 22px 16px; display: flex; align-items: center; gap: 14px;
+}
+.tool-icon {
+  width: 54px; height: 54px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.75rem; flex-shrink: 0;
+}
+.tool-card-header h3 { font-size: 1.1rem; font-weight: 700; }
+.tool-card-header .tool-tag {
+  font-size: 0.72rem; font-weight: 600; padding: 3px 10px;
+  border-radius: 20px; display: inline-block; margin-top: 4px;
+}
+.tool-card-body {
+  padding: 0 22px 0; max-height: 0; overflow: hidden;
+  transition: max-height 0.45s ease, padding 0.3s ease;
+}
+.tool-card.open .tool-card-body { max-height: 450px; padding: 0 22px 24px; }
+.tool-card-body p { font-size: 0.9rem; color: var(--text-light); margin-bottom: 10px; }
+.tool-card-body .use-case {
+  background: #F8F7FF; padding: 11px 14px; border-radius: var(--radius-sm);
+  border-left: 4px solid var(--primary-light); font-size: 0.86rem;
+}
+.tool-card-body .lesson-badge {
+  display: inline-block; margin-top: 10px;
+  font-size: 0.76rem; font-weight: 600; padding: 3px 10px;
+  border-radius: 20px; background: #E8F5E9; color: #2E7D32;
+}
+.tool-card .expand-hint {
+  text-align: center; padding-bottom: 14px;
+  font-size: 0.78rem; color: var(--primary); font-weight: 600; opacity: 0.75;
+}
+.tool-card.open .expand-hint { display: none; }
+
+.cat-basic .tool-icon { background: #E8F5E9; }
+.cat-color .tool-icon { background: #FFF3E0; }
+.cat-creative .tool-icon { background: #E3F2FD; }
+.cat-ai .tool-icon { background: #F3E5F5; }
+.cat-basic .tool-tag { background: #E8F5E9; color: #2E7D32; }
+.cat-color .tool-tag { background: #FFF3E0; color: #E65100; }
+.cat-creative .tool-tag { background: #E3F2FD; color: #1565C0; }
+.cat-ai .tool-tag { background: #F3E5F5; color: #7B1FA2; }
+
+/* ===== MINI PIXLR LAB (INTERACTIVE SIMULATOR) ===== */
+.lab-section { background: #fff; }
+.lab-wrapper {
+  display: grid; grid-template-columns: 1.15fr 1fr; gap: 28px;
+  align-items: start;
+}
+.lab-stage-card {
+  background: #1E212B; border-radius: var(--radius);
+  padding: 20px; box-shadow: var(--shadow); color: #fff;
+}
+.lab-topbar {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 14px; font-size: 0.85rem; color: #B2BEC3;
+}
+.lab-canvas-wrap {
+  width: 100%; aspect-ratio: 4 / 3;
+  border-radius: 12px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  background-color: #2D3436;
+  background-image:
+    linear-gradient(45deg, #ccc 25%, transparent 25%),
+    linear-gradient(-45deg, #ccc 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ccc 75%),
+    linear-gradient(-45deg, transparent 75%, #ccc 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+.lab-canvas-wrap canvas {
+  max-width: 100%; max-height: 100%;
+  transition: transform 0.25s ease;
+}
+.lab-controls {
+  background: #F8F9FC; border-radius: var(--radius);
+  padding: 22px; box-shadow: var(--shadow);
+}
+.lab-control-group { margin-bottom: 16px; }
+.lab-control-group label {
+  display: flex; justify-content: space-between;
+  font-size: 0.86rem; font-weight: 700; margin-bottom: 6px;
+}
+.lab-control-group input[type="range"] {
+  width: 100%; accent-color: var(--primary); cursor: pointer;
+}
+.lab-btn-row {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;
+}
+.lab-btn {
+  padding: 8px 13px; border-radius: 10px; border: 2px solid #E0E0E0;
+  background: #fff; font-weight: 700; font-size: 0.82rem;
+  cursor: pointer; transition: all 0.2s; font-family: inherit;
+}
+.lab-btn:hover { border-color: var(--primary); color: var(--primary); }
+.lab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.lab-text-input {
+  width: 100%; padding: 9px 12px; border: 2px solid #E0E0E0;
+  border-radius: 10px; font-family: inherit; font-size: 0.9rem;
+}
+.lab-checklist {
+  margin-top: 16px; background: #fff; padding: 14px 16px;
+  border-radius: 12px; border-left: 4px solid var(--secondary);
+}
+.lab-checklist h4 { font-size: 0.9rem; color: var(--primary); margin-bottom: 8px; }
+.lab-task {
+  font-size: 0.84rem; padding: 4px 0; color: var(--text-light);
+  display: flex; align-items: center; gap: 8px;
+}
+.lab-task.done { color: var(--success); font-weight: 700; text-decoration: line-through; }
+
+/* ===== FORMAT SECTION ===== */
+.format-section { background: linear-gradient(180deg, #F0F3F8 0%, #FFFFFF 100%); }
+.format-cards {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px; margin-bottom: 36px;
+}
+.format-card {
+  border-radius: var(--radius); padding: 28px 24px;
+  text-align: center; transition: all 0.3s;
+  border: 3px solid transparent; cursor: pointer;
+}
+.format-card:hover { transform: translateY(-4px); }
+.format-card.jpg { background: linear-gradient(135deg, #FFEAA7 0%, #FFF9E6 100%); }
+.format-card.jpg:hover, .format-card.jpg.selected { border-color: #F39C12; }
+.format-card.png { background: linear-gradient(135deg, #81ECEC 0%, #E0FFFE 100%); }
+.format-card.png:hover, .format-card.png.selected { border-color: #00B894; }
+.format-card.gif { background: linear-gradient(135deg, #FD79A8 0%, #FFE4EE 100%); }
+.format-card.gif:hover, .format-card.gif.selected { border-color: #E84393; }
+.format-card .fmt-icon { font-size: 2.8rem; margin-bottom: 10px; }
+.format-card h3 { font-size: 1.45rem; font-weight: 900; margin-bottom: 4px; }
+.format-card .fmt-ext { font-size: 0.85rem; color: var(--text-light); margin-bottom: 14px; }
+.format-features { text-align: left; margin-top: 14px; }
+.format-features li {
+  list-style: none; padding: 5px 0; font-size: 0.89rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.format-motto {
+  text-align: center; padding: 24px;
+  background: linear-gradient(135deg, var(--primary), #764ba2);
+  border-radius: var(--radius); color: #fff; margin-bottom: 48px;
+}
+.format-motto .motto-text { font-size: 1.4rem; font-weight: 900; letter-spacing: 2px; }
+.format-motto .motto-sub { font-size: 0.88rem; opacity: 0.88; margin-top: 6px; }
+
+/* ===== SCENARIO GAME ===== */
+.scenario-box {
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 32px;
+  text-align: center; max-width: 650px; margin: 0 auto;
+  border: 2px solid #EDE9FF;
+}
+.combo-badge {
+  display: inline-block; background: #FFF3E0; color: #E65100;
+  font-weight: 900; font-size: 0.85rem; padding: 4px 14px;
+  border-radius: 20px; margin-bottom: 12px; opacity: 0;
+  transition: all 0.3s;
+}
+.combo-badge.show { opacity: 1; transform: scale(1.05); }
+.scenario-question {
+  font-size: 1.12rem; font-weight: 700; margin-bottom: 22px;
+  min-height: 58px; display: flex; align-items: center; justify-content: center;
+}
+.scenario-options { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.scenario-btn {
+  padding: 13px 28px; border-radius: var(--radius-sm);
+  font-weight: 800; font-size: 1.08rem; cursor: pointer;
+  border: 3px solid transparent; transition: all 0.25s;
+  min-width: 105px; font-family: inherit;
+}
+.scenario-btn.jpg-btn { background: #FFF9E6; color: #D68910; border-color: #F39C12; }
+.scenario-btn.png-btn { background: #E0FFFE; color: #00897B; border-color: #00B894; }
+.scenario-btn.gif-btn { background: #FFE4EE; color: #C2185B; border-color: #E84393; }
+.scenario-btn:hover { transform: scale(1.07); }
+.scenario-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.scenario-feedback {
+  margin-top: 18px; padding: 14px; border-radius: var(--radius-sm);
+  font-weight: 600; font-size: 0.94rem; display: none;
+}
+.scenario-feedback.correct { display: block; background: #E8F5E9; color: #2E7D32; }
+.scenario-feedback.wrong { display: block; background: #FFEBEE; color: #C62828; }
+.scenario-score { margin-top: 14px; font-size: 0.9rem; color: var(--text-light); font-weight: 600; }
+.scenario-next {
+  margin-top: 16px; padding: 10px 26px;
+  background: var(--primary); color: #fff;
+  border: none; border-radius: 50px; cursor: pointer;
+  font-weight: 700; font-size: 0.94rem; display: none; font-family: inherit;
+}
+
+/* ===== QUIZ ===== */
+.quiz-section { background: linear-gradient(180deg, #F8F7FF 0%, var(--bg) 100%); }
+.quiz-container { max-width: 720px; margin: 0 auto; }
+.quiz-progress { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+.quiz-progress-bar { flex: 1; height: 11px; background: #E0E0E0; border-radius: 10px; overflow: hidden; }
+.quiz-progress-fill {
+  height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 10px; transition: width 0.4s ease;
+}
+.quiz-progress-text { font-weight: 800; font-size: 0.9rem; color: var(--primary); min-width: 65px; }
+.quiz-card {
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 34px;
+}
+.quiz-top-meta {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+}
+.quiz-card .q-number { font-size: 0.85rem; font-weight: 700; color: var(--primary); }
+.quiz-card .q-text { font-size: 1.15rem; font-weight: 800; margin-bottom: 22px; line-height: 1.6; }
+.quiz-options { display: flex; flex-direction: column; gap: 11px; }
+.quiz-option {
+  padding: 15px 18px; border: 2px solid #E0E0E0;
+  border-radius: var(--radius-sm); cursor: pointer;
+  transition: all 0.25s; font-size: 0.98rem;
+  display: flex; align-items: center; gap: 12px; font-weight: 500;
+}
+.quiz-option:hover { border-color: var(--primary-light); background: #F8F7FF; }
+.quiz-option .opt-letter {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: #F0F0F0; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.88rem; flex-shrink: 0;
+}
+.quiz-option.correct { border-color: var(--success); background: #E8F5E9; pointer-events: none; }
+.quiz-option.correct .opt-letter { background: var(--success); color: #fff; }
+.quiz-option.wrong { border-color: var(--error); background: #FFEBEE; pointer-events: none; }
+.quiz-option.wrong .opt-letter { background: var(--error); color: #fff; }
+.quiz-option.disabled { pointer-events: none; opacity: 0.55; }
+.quiz-explain {
+  margin-top: 18px; padding: 14px 16px; border-radius: var(--radius-sm);
+  font-size: 0.92rem; display: none;
+}
+.quiz-explain.show { display: block; }
+.quiz-explain.correct-explain { background: #E8F5E9; color: #2E7D32; border-left: 4px solid var(--success); }
+.quiz-explain.wrong-explain { background: #FFEBEE; color: #C62828; border-left: 4px solid var(--error); }
+.quiz-next-btn {
+  display: none; margin-top: 20px; padding: 13px 32px;
+  background: var(--primary); color: #fff; border: none;
+  border-radius: 50px; cursor: pointer; font-weight: 700;
+  font-size: 1rem; width: 100%; font-family: inherit;
+}
+.quiz-next-btn.show { display: block; }
+
+.quiz-result {
+  display: none; text-align: center; padding: 40px 28px;
+  background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.quiz-result.show { display: block; }
+.result-emoji { font-size: 3.8rem; margin-bottom: 10px; }
+.result-title { font-size: 1.7rem; font-weight: 900; color: var(--primary); margin-bottom: 6px; }
+.result-score { font-size: 2.8rem; font-weight: 900; color: #F39C12; margin: 12px 0; }
+.result-msg { font-size: 0.98rem; color: var(--text-light); margin-bottom: 20px; }
+.result-details { margin-top: 20px; text-align: left; }
+.result-details summary { cursor: pointer; font-weight: 700; color: var(--primary); padding: 8px 0; }
+.result-item {
+  padding: 9px 14px; border-radius: 8px; margin: 6px 0;
+  font-size: 0.88rem; display: flex; align-items: flex-start; gap: 10px;
+}
+.result-item.ri-correct { background: #E8F5E9; }
+.result-item.ri-wrong { background: #FFEBEE; }
+
+/* ===== MISSIONS & REPORT CARD ===== */
+.missions-section { background: #fff; }
+.mission-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px; margin-bottom: 24px;
+}
+.mission-item {
+  background: #FAFBFF; border-radius: 14px;
+  padding: 16px 18px; display: flex; align-items: flex-start; gap: 14px;
+  transition: all 0.25s; border: 2px solid #ECEFF4;
+}
+.mission-item.checked { border-color: var(--success); background: #F2FFF9; }
+.mission-check {
+  width: 26px; height: 26px; border: 2px solid #BBB;
+  border-radius: 50%; cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 2px; font-weight: 900; font-size: 0.85rem;
+}
+.mission-item.checked .mission-check {
+  background: var(--success); border-color: var(--success); color: #fff;
+}
+.mission-text h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 2px; }
+.mission-text p { font-size: 0.83rem; color: var(--text-light); }
+.auto-tag {
+  font-size: 0.7rem; background: #EDE9FF; color: var(--primary);
+  padding: 1px 7px; border-radius: 10px; margin-left: 6px; font-weight: 700;
+}
+
+/* ===== REPORT CARD SECTION ===== */
+.report-section {
+  background: linear-gradient(135deg, #EEF2FF 0%, #F5F3FF 100%);
+}
+.report-box {
+  background: #fff; border-radius: 20px; padding: 32px;
+  box-shadow: 0 10px 35px rgba(108,92,231,0.12);
+  max-width: 900px; margin: 0 auto;
+}
+.report-summary-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+  margin-bottom: 24px;
+}
+.rs-card {
+  background: #F8F9FC; border-radius: 14px; padding: 16px;
+  text-align: center; border: 2px solid #ECEFF4;
+}
+.rs-card .rs-label { font-size: 0.8rem; color: var(--text-light); font-weight: 700; }
+.rs-card .rs-val { font-size: 1.5rem; font-weight: 900; color: var(--primary); margin-top: 4px; }
+.rs-card.total-card {
+  background: linear-gradient(135deg, var(--primary), #764ba2);
+  color: #fff; border: none;
+}
+.rs-card.total-card .rs-label { color: rgba(255,255,255,0.85); }
+.rs-card.total-card .rs-val { color: var(--accent); font-size: 1.75rem; }
+
+.report-student-form {
+  display: grid; grid-template-columns: 1fr 1fr 1.4fr auto; gap: 10px;
+  align-items: end; background: #F8F7FF; padding: 16px;
+  border-radius: 14px; margin-bottom: 24px;
+}
+.report-student-form label {
+  display: block; font-size: 0.78rem; font-weight: 700;
+  color: var(--primary); margin-bottom: 4px;
+}
+.report-student-form input {
+  width: 100%; padding: 9px 12px; border: 2px solid #DCD6FF;
+  border-radius: 10px; font-family: inherit; font-size: 0.92rem;
+}
+
+.report-preview-wrap {
+  text-align: center; margin: 20px 0;
+  background: #F0F3F8; padding: 16px; border-radius: 14px;
+}
+#reportCanvas {
+  max-width: 100%; height: auto; border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+.download-actions {
+  display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+  margin-top: 20px;
+}
+.classroom-guide {
+  margin-top: 28px; background: #E8F5E9; border-radius: 14px;
+  padding: 20px 24px; border-left: 5px solid var(--success);
+}
+.classroom-guide h4 { color: #2E7D32; margin-bottom: 10px; font-size: 1rem; }
+.classroom-steps {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+}
+.c-step {
+  background: #fff; padding: 12px 14px; border-radius: 10px;
+  font-size: 0.86rem;
+}
+.c-step strong { color: #2E7D32; display: block; margin-bottom: 4px; }
+
+/* ===== TIPS & FOOTER ===== */
+.tips-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px; margin-top: 32px;
+}
+.tip-card {
+  background: #F8F9FC; border-radius: var(--radius);
+  padding: 20px; border: 1px solid #ECEFF4;
+}
+.tip-card .tip-icon { font-size: 1.8rem; margin-bottom: 8px; }
+.tip-card h4 { font-weight: 700; margin-bottom: 6px; font-size: 0.96rem; }
+.tip-card p { font-size: 0.86rem; color: var(--text-light); }
+
+footer {
+  text-align: center; padding: 36px 20px;
+  background: var(--primary); color: rgba(255,255,255,0.85);
+  font-size: 0.86rem;
+}
+
+/* ===== TOAST & CONFETTI ===== */
+.toast {
+  position: fixed; top: 76px; right: 20px; z-index: 2000;
+  background: #2D3436; color: #fff; padding: 12px 20px;
+  border-radius: 12px; font-weight: 700; font-size: 0.9rem;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  transform: translateX(130%); transition: transform 0.35s ease;
+}
+.toast.show { transform: translateX(0); }
+.confetti-canvas {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 9999;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 850px) {
+  .nav-links { display: none; }
+  .lab-wrapper { grid-template-columns: 1fr; }
+  .roadmap { grid-template-columns: repeat(2, 1fr); }
+  .report-summary-grid { grid-template-columns: repeat(2, 1fr); }
+  .report-student-form { grid-template-columns: 1fr 1fr; }
+  .classroom-steps { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .login-grid { grid-template-columns: 1fr; }
+  .report-student-form { grid-template-columns: 1fr; }
+  .guide-bar { font-size: 0.8rem; padding: 8px 14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">🎨 Pixlr 修圖教室</div>
+    <div class="nav-links">
+      <a href="#tools" class="nav-link" id="nav-tools">1.工具圖鑑 <span class="nav-done">✅</span></a>
+      <a href="#lab" class="nav-link" id="nav-lab">2.修圖實驗室 <span class="nav-done">✅</span></a>
+      <a href="#formats" class="nav-link" id="nav-formats">3.格式挑戰 <span class="nav-done">✅</span></a>
+      <a href="#quiz" class="nav-link" id="nav-quiz">4.綜合測驗 <span class="nav-done">✅</span></a>
+      <a href="#report" class="nav-link" id="nav-report">5.領成績單 🏆</a>
+    </div>
+    <div class="nav-right">
+      <button class="student-pill" id="navStudentPill" onclick="scrollToId('home')">👤 填寫姓名</button>
+      <div class="score-pill" id="navScorePill">⭐ 0 / 100 分</div>
+      <button class="sound-btn" id="soundBtn" onclick="toggleSound()" title="開關音效">🔊</button>
+    </div>
+  </div>
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="overallProgress"></div>
+  </div>
+</nav>
+
+<!-- ===== FLOATING GUIDE BAR ===== -->
+<div class="guide-bar" id="guideBar">
+  <span id="guideText">👋 先填寫班級、座號、姓名，再開始第 1 關闖關！</span>
+  <button class="guide-go" id="guideBtn" onclick="goNextSuggested()">前往第 1 關 ➡️</button>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <h1>🖌️ Pixlr 修圖教室大冒險</h1>
+    <p>四年級電腦課互動闖關站！完成 5 個關卡就能拿到滿分 100 分，<br>下載專屬成績單圖片，直接上傳到 Google Classroom 交作業！</p>
+
+    <!-- Student Login -->
+    <div class="login-card">
+      <h3>🎒 學生報到卡（會自動印在最後的成績單上喔！）</h3>
+      <div class="login-grid">
+        <div class="login-field">
+          <label for="stuClass">班級（例：401）</label>
+          <input type="text" id="stuClass" placeholder="例如：401" maxlength="10">
+        </div>
+        <div class="login-field">
+          <label for="stuSeat">座號（例：05）</label>
+          <input type="text" id="stuSeat" placeholder="例如：05" maxlength="5">
+        </div>
+        <div class="login-field">
+          <label for="stuName">姓名</label>
+          <input type="text" id="stuName" placeholder="請輸入你的名字" maxlength="15">
+        </div>
+      </div>
+      <div style="text-align:center;">
+        <button class="btn" onclick="startAdventure()">🚀 儲存資料，開始第 1 關！</button>
+      </div>
+    </div>
+
+    <!-- 5-Stage Roadmap -->
+    <div class="roadmap">
+      <a href="#tools" class="road-step" id="road-1">
+        <div class="rs-icon">🧰</div>
+        <div class="rs-title">第1關 工具圖鑑</div>
+        <div class="rs-pts" id="rp-1">0 / 10 分</div>
+      </a>
+      <a href="#lab" class="road-step" id="road-2">
+        <div class="rs-icon">🧪</div>
+        <div class="rs-title">第2關 修圖實驗</div>
+        <div class="rs-pts" id="rp-2">0 / 10 分</div>
+      </a>
+      <a href="#formats" class="road-step" id="road-3">
+        <div class="rs-icon">🎮</div>
+        <div class="rs-title">第3關 格式挑戰</div>
+        <div class="rs-pts" id="rp-3">0 / 20 分</div>
+      </a>
+      <a href="#quiz" class="road-step" id="road-4">
+        <div class="rs-icon">📝</div>
+        <div class="rs-title">第4關 綜合測驗</div>
+        <div class="rs-pts" id="rp-4">0 / 60 分</div>
+      </a>
+      <a href="#report" class="road-step" id="road-5">
+        <div class="rs-icon">🏆</div>
+        <div class="rs-title">第5關 領成績單</div>
+        <div class="rs-pts">下載交作業</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STAGE 1: TOOLS SECTION ===== -->
+<section id="tools">
+  <div class="section-inner">
+    <div class="section-title">
+      <span class="stage-badge">第 1 關 ｜ 滿分 10 分</span>
+      <h2>🧰 Pixlr 工具大圖鑑</h2>
+      <p>點開每一張工具卡片閱讀說明，就能蓋上「已學過」印章並累積分數！</p>
+    </div>
+
+    <div class="explore-status">
+      <div class="explore-bar"><div class="explore-bar-fill" id="exploreFill"></div></div>
+      <div class="explore-text" id="exploreText">已探索 0 / 12 個工具 (0/10分)</div>
+    </div>
+
+    <div class="cat-tabs" id="catTabs">
+      <div class="cat-tab active" data-cat="all">全部工具 (12)</div>
+      <div class="cat-tab" data-cat="basic">🔧 基礎操作</div>
+      <div class="cat-tab" data-cat="color">🎨 調色修圖</div>
+      <div class="cat-tab" data-cat="creative">✏️ 創意工具</div>
+      <div class="cat-tab" data-cat="ai">🤖 AI 魔法</div>
+    </div>
+
+    <div class="tools-grid" id="toolsGrid"></div>
+
+    <div class="section-next-wrap">
+      <a href="#lab" class="btn btn-primary">前往第 2 關：動手玩修圖實驗室 ➡️</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STAGE 2: MINI PIXLR LAB ===== -->
+<section id="lab" class="lab-section">
+  <div class="section-inner">
+    <div class="section-title">
+      <span class="stage-badge">第 2 關 ｜ 滿分 10 分</span>
+      <h2>🧪 Pixlr 迷你修圖實驗室</h2>
+      <p>不用開軟體，現在就親手試試看亮度、飽和度、旋轉、裁切和 AI 去背的效果！</p>
+    </div>
+
+    <div class="lab-wrapper">
+      <div class="lab-stage-card">
+        <div class="lab-topbar">
+          <span>🖼️ 預覽畫布：<strong id="labFormatLabel" style="color:#FDCB6E;">JPG（含風景背景）</strong></span>
+          <span id="labSizeLabel">尺寸：480 × 360</span>
+        </div>
+        <div class="lab-canvas-wrap">
+          <canvas id="labCanvas" width="480" height="360"></canvas>
+        </div>
+      </div>
+
+      <div class="lab-controls">
+        <div class="lab-control-group">
+          <label><span>☀️ 亮度 (Brightness)</span><span id="valBright">100%</span></label>
+          <input type="range" id="slBright" min="40" max="170" value="100" oninput="updateLab('color')">
+        </div>
+        <div class="lab-control-group">
+          <label><span>🌓 對比 (Contrast)</span><span id="valContrast">100%</span></label>
+          <input type="range" id="slContrast" min="50" max="170" value="100" oninput="updateLab('color')">
+        </div>
+        <div class="lab-control-group">
+          <label><span>🎨 飽和度 (Saturation)</span><span id="valSat">100%</span></label>
+          <input type="range" id="slSat" min="0" max="220" value="100" oninput="updateLab('color')">
+        </div>
+
+        <div class="lab-control-group">
+          <label><span>🔧 基礎與 AI 工具</span></label>
+          <div class="lab-btn-row">
+            <button class="lab-btn" id="btnRotate" onclick="labAction('rotate')">🔄 旋轉 90°</button>
+            <button class="lab-btn" id="btnFlip" onclick="labAction('flip')">↔️ 水平翻轉</button>
+            <button class="lab-btn" id="btnCrop" onclick="labAction('crop')">✂️ 裁切 1:1</button>
+            <button class="lab-btn" id="btnRemoveBg" onclick="labAction('removebg')">🤖 AI 去背</button>
+            <button class="lab-btn" onclick="labAction('reset')">↩️ 全部復原</button>
+          </div>
+        </div>
+
+        <div class="lab-control-group">
+          <label><span>🪄 一鍵濾鏡</span></label>
+          <div class="lab-btn-row">
+            <button class="lab-btn active" data-filter="none" onclick="setLabFilter('none', this)">原圖</button>
+            <button class="lab-btn" data-filter="bw" onclick="setLabFilter('bw', this)">黑白底片</button>
+            <button class="lab-btn" data-filter="vintage" onclick="setLabFilter('vintage', this)">復古懷舊</button>
+            <button class="lab-btn" data-filter="cool" onclick="setLabFilter('cool', this)">冷調科幻</button>
+          </div>
+        </div>
+
+        <div class="lab-control-group">
+          <label><span>🔤 文字工具（在圖片上加字）</span></label>
+          <input type="text" class="lab-text-input" id="labText" placeholder="輸入文字，例如：我的修圖作品！" maxlength="16" oninput="updateLab('text')">
+        </div>
+
+        <div class="lab-checklist">
+          <h4>🎯 實驗室動手任務（完成 4 項拿滿 10 分！）</h4>
+          <div class="lab-task" id="lt-color">⬜ 1. 拉動亮度、對比或飽和度滑桿</div>
+          <div class="lab-task" id="lt-transform">⬜ 2. 試試看旋轉 90°、水平翻轉或裁切 1:1</div>
+          <div class="lab-task" id="lt-removebg">⬜ 3. 按下「AI 去背」，觀察透明背景棋盤格</div>
+          <div class="lab-task" id="lt-text">⬜ 4. 用文字工具在圖片上加上一句話</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-next-wrap">
+      <a href="#formats" class="btn btn-primary">前往第 3 關：圖片格式教室與情境挑戰 ➡️</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STAGE 3: FORMAT & SCENARIO ===== -->
+<section id="formats" class="format-section">
+  <div class="section-inner">
+    <div class="section-title">
+      <span class="stage-badge">第 3 關 ｜ 滿分 20 分</span>
+      <h2>📁 圖片格式教室 & 情境挑戰</h2>
+      <p>先看懂 JPG、PNG、GIF 的差別，再挑戰 8 題情境題（每題 2.5 分）！</p>
+    </div>
+
+    <div class="format-cards">
+      <div class="format-card jpg" onclick="this.classList.toggle('selected')">
+        <div class="fmt-icon">📸</div>
+        <h3>JPG</h3>
+        <div class="fmt-ext">.jpg / .jpeg</div>
+        <ul class="format-features">
+          <li>✅ 適合照片和風景圖</li>
+          <li>✅ 檔案小，傳送快</li>
+          <li>❌ 不能透明背景</li>
+          <li>❌ 不能做動畫</li>
+          <li>🏷️ 用過的課：名片(圖4)、明信片(圖5)</li>
+        </ul>
+      </div>
+      <div class="format-card png" onclick="this.classList.toggle('selected')">
+        <div class="fmt-icon">🖼️</div>
+        <h3>PNG</h3>
+        <div class="fmt-ext">.png</div>
+        <ul class="format-features">
+          <li>✅ 可以透明背景！</li>
+          <li>✅ 畫質清晰不模糊</li>
+          <li>⚠️ 檔案比 JPG 大</li>
+          <li>❌ 不能做動畫</li>
+          <li>🏷️ 用過的課：去背主角(圖2)</li>
+        </ul>
+      </div>
+      <div class="format-card gif" onclick="this.classList.toggle('selected')">
+        <div class="fmt-icon">🎞️</div>
+        <h3>GIF</h3>
+        <div class="fmt-ext">.gif</div>
+        <ul class="format-features">
+          <li>✅ 可以做動畫會動！</li>
+          <li>✅ 可以透明背景</li>
+          <li>⚠️ 顏色只有 256 色</li>
+          <li>❌ 不適合存照片</li>
+          <li>🏷️ 用過的課：找動圖(圖1)、自製(圖3)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="format-motto">
+      <div class="motto-text">📣 格式口訣：照片 J、去背 P、會動 G</div>
+      <div class="motto-sub">J = JPG ｜ P = PNG ｜ G = GIF &nbsp; 記住這句就不會選錯啦！</div>
+    </div>
+
+    <!-- Scenario Game -->
+    <div id="scenario" class="scenario-box">
+      <h3 style="color:var(--primary);margin-bottom:8px;">🎮 情境挑戰：選對格式！</h3>
+      <div class="combo-badge" id="scenarioCombo">🔥 連對 0 題！</div>
+      <div class="scenario-question" id="scenarioQ"></div>
+      <div class="scenario-options" id="scenarioOpts">
+        <button class="scenario-btn jpg-btn" onclick="checkScenario('JPG')">JPG</button>
+        <button class="scenario-btn png-btn" onclick="checkScenario('PNG')">PNG</button>
+        <button class="scenario-btn gif-btn" onclick="checkScenario('GIF')">GIF</button>
+      </div>
+      <div class="scenario-feedback" id="scenarioFb"></div>
+      <div class="scenario-score" id="scenarioScore"></div>
+      <button class="scenario-next" id="scenarioNext" onclick="nextScenario()">下一題 ➡️</button>
+      <button class="scenario-next" id="scenarioRestart" style="background:var(--secondary);" onclick="restartScenario()">🔄 再挑戰一次（取最高分）</button>
+    </div>
+
+    <div class="section-next-wrap">
+      <a href="#quiz" class="btn btn-primary">前往第 4 關：15 題修圖大挑戰 ➡️</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STAGE 4: QUIZ SECTION ===== -->
+<section id="quiz" class="quiz-section">
+  <div class="section-inner">
+    <div class="section-title">
+      <span class="stage-badge">第 4 關 ｜ 滿分 60 分</span>
+      <h2>📝 Pixlr 修圖大挑戰</h2>
+      <p>總共 15 題（每題 4 分），答完就會自動結算成績，答錯也能再挑戰取最高分！</p>
+    </div>
+    <div class="quiz-container">
+      <div class="quiz-progress" id="quizProgress">
+        <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizFill"></div></div>
+        <div class="quiz-progress-text" id="quizProgressText">1 / 15</div>
+      </div>
+      <div class="quiz-card" id="quizCard">
+        <div class="quiz-top-meta">
+          <div class="q-number" id="qNumber"></div>
+          <div class="combo-badge" id="quizCombo" style="margin:0;">🔥 連對 0 題！</div>
+        </div>
+        <div class="q-text" id="qText"></div>
+        <div class="quiz-options" id="qOptions"></div>
+        <div class="quiz-explain" id="qExplain"></div>
+        <button class="quiz-next-btn" id="qNextBtn" onclick="nextQuestion()">下一題 ➡️</button>
+      </div>
+      <div class="quiz-result" id="quizResult"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STAGE 5: MISSIONS + REPORT CARD ===== -->
+<section id="missions" class="missions-section">
+  <div class="section-inner">
+    <div class="section-title">
+      <span class="stage-badge">學習檢核表</span>
+      <h2>🎯 學習任務清單</h2>
+      <p>前 4 項會依據你的闖關表現自動打勾，後 6 項請確認自己在 Pixlr 實作完成後打勾！</p>
+    </div>
+    <div class="mission-grid" id="missionList"></div>
+    <div style="text-align:center;font-weight:800;color:var(--primary);font-size:1.02rem;" id="missionCounter"></div>
+
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-icon">💾</div>
+        <h4>存檔好習慣</h4>
+        <p>修圖完畢記得另存新檔，不要直接蓋掉原圖。檔名取有意義的名稱，方便查找！</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🔒</div>
+        <h4>鎖定比例很重要</h4>
+        <p>調整圖片大小時，一定要勾選「鎖定比例」，否則圖片會被壓扁或拉寬！</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">↩️</div>
+        <h4>Ctrl+Z 是你的好朋友</h4>
+        <p>做錯了不要緊！按 Ctrl+Z 就能復原上一步，可以連按好幾次回到之前的狀態。</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">👑</div>
+        <h4>避開皇冠付費素材</h4>
+        <p>在 Pixlr 和 Canva 中，看到皇冠 👑 標誌代表要付費，請選擇免費的素材！</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== REPORT CARD SECTION ===== -->
+<section id="report" class="report-section">
+  <div class="section-inner">
+    <div class="section-title">
+      <span class="stage-badge">第 5 關 ｜ 繳交作業</span>
+      <h2>🏆 專屬學習成績單</h2>
+      <p>確認你的班級、座號、姓名與分數，點選「下載成績單圖片」就能上傳到 Google Classroom！</p>
+    </div>
+
+    <div class="report-box">
+      <!-- Score breakdown -->
+      <div class="report-summary-grid">
+        <div class="rs-card">
+          <div class="rs-label">🧰 工具探索</div>
+          <div class="rs-val" id="sumTools">0 / 10</div>
+        </div>
+        <div class="rs-card">
+          <div class="rs-label">🧪 修圖實驗室</div>
+          <div class="rs-val" id="sumLab">0 / 10</div>
+        </div>
+        <div class="rs-card">
+          <div class="rs-label">🎮 格式挑戰</div>
+          <div class="rs-val" id="sumScenario">0 / 20</div>
+        </div>
+        <div class="rs-card">
+          <div class="rs-label">📝 綜合測驗</div>
+          <div class="rs-val" id="sumQuiz">0 / 60</div>
+        </div>
+      </div>
+
+      <div class="rs-card total-card" style="margin-bottom:22px;">
+        <div class="rs-label">🌟 目前總分（滿分 100 分）</div>
+        <div class="rs-val" id="sumTotal">0 分 ｜ 稱號：修圖新手</div>
+      </div>
+
+      <!-- Quick edit student info -->
+      <div class="report-student-form">
+        <div>
+          <label for="repClass">班級</label>
+          <input type="text" id="repClass" placeholder="例如：401" oninput="syncStudentFromReport()">
+        </div>
+        <div>
+          <label for="repSeat">座號</label>
+          <input type="text" id="repSeat" placeholder="例如：05" oninput="syncStudentFromReport()">
+        </div>
+        <div>
+          <label for="repName">姓名</label>
+          <input type="text" id="repName" placeholder="請輸入姓名" oninput="syncStudentFromReport()">
+        </div>
+        <div>
+          <button class="btn btn-primary" style="padding:10px 20px;font-size:0.9rem;" onclick="drawReportCard(true)">🔄 更新成績單</button>
+        </div>
+      </div>
+
+      <!-- Canvas Preview -->
+      <div class="report-preview-wrap">
+        <canvas id="reportCanvas" width="900" height="640"></canvas>
+      </div>
+
+      <div class="download-actions">
+        <button class="btn btn-success" onclick="downloadReportPNG()">⬇️ 下載成績單圖片 (.png)</button>
+        <button class="btn" style="background:#ECEFF4;color:#2D3436;box-shadow:none;" onclick="resetAllProgress()">🗑️ 重設所有進度</button>
+      </div>
+
+      <!-- Classroom upload guide -->
+      <div class="classroom-guide">
+        <h4>📤 怎麼把成績單交到 Google Classroom 讓老師評分？</h4>
+        <div class="classroom-steps">
+          <div class="c-step">
+            <strong>步驟 1：下載圖片</strong>
+            按上方綠色的「⬇️ 下載成績單圖片」按鈕，圖片會存到電腦的「下載」資料夾。
+          </div>
+          <div class="c-step">
+            <strong>步驟 2：打開 Classroom</strong>
+            回到 Google Classroom 的這堂課作業，點選右上角的「＋ 新增或建立」→「檔案」。
+          </div>
+          <div class="c-step">
+            <strong>步驟 3：上傳並繳交</strong>
+            選擇剛剛下載的成績單圖片（檔名有你的名字和分數），最後按下「繳交」就完成囉！
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div style="font-size:1.5rem;margin-bottom:6px;">🎨✏️🖌️</div>
+  <p>Pixlr 修圖教室 — 四年級電腦課互動闖關學習站</p>
+  <p style="margin-top:4px;opacity:0.7;">完成全部關卡，下載成績單交作業吧！💪</p>
+</footer>
+
+<div class="toast" id="toast"></div>
+<canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+
+<script>
+// ===== DATA =====
+const tools = [
+  { id:'crop', cat:'basic', icon:'✂️', name:'裁切 Crop',
+    desc:'剪掉圖片中不需要的邊緣部分，只留下你想要的範圍。就像用剪刀把照片多餘的部分剪掉一樣！',
+    useCase:'💡 什麼時候用？照片邊邊有不想要的東西、想把圖片變成正方形、只想留住畫面中的某一個部分。',
+    lesson:'圖片5B 新學' },
+  { id:'rotate', cat:'basic', icon:'🔄', name:'旋轉與翻轉',
+    desc:'把圖片轉 90 度、180 度，或者水平翻轉（左右相反）、垂直翻轉（上下顛倒）。',
+    useCase:'💡 什麼時候用？圖片方向歪了、想讓角色面向另一邊、照片拿反了需要轉正。',
+    lesson:'圖片5B 新學' },
+  { id:'resize', cat:'basic', icon:'📐', name:'調整大小 Resize',
+    desc:'放大或縮小整張圖片的尺寸。⚠️ 一定要記得勾選「鎖定比例 🔒」，否則圖片會被壓扁！',
+    useCase:'💡 什麼時候用？圖片太大傳不出去、需要特定尺寸（如 800×600）、想讓檔案變小一點。',
+    lesson:'圖片5B 新學' },
+  { id:'brightness', cat:'color', icon:'☀️', name:'亮度與對比',
+    desc:'亮度：讓整張圖變亮或變暗。對比：讓亮的地方更亮、暗的地方更暗，讓畫面更有層次感。',
+    useCase:'💡 什麼時候用？照片太暗看不清楚、拍照時光線不足、想讓照片看起來更清晰。',
+    lesson:'圖片5 已學' },
+  { id:'saturation', cat:'color', icon:'🎨', name:'飽和度 / 鮮豔度',
+    desc:'控制圖片顏色的鮮豔程度。調高讓顏色更鮮豔繽紛，調低讓顏色變淡，調到最低就會變成黑白照片！',
+    useCase:'💡 什麼時候用？想讓天空更藍、草地更綠、想做出復古淡色風格、想把照片變成黑白。',
+    lesson:'圖片5 已學' },
+  { id:'filter', cat:'color', icon:'🪄', name:'濾鏡 / 效果',
+    desc:'一鍵幫圖片套上不同的視覺風格，像幫照片戴上不同的魔法眼鏡！',
+    useCase:'💡 什麼時候用？想把照片變成復古懷舊風、溫暖日系風、冷調科幻風、黑白底片感覺。',
+    lesson:'圖片5 已學' },
+  { id:'text', cat:'creative', icon:'🔤', name:'文字工具',
+    desc:'在圖片上加入文字。可以選擇字體、大小、顏色，還能調整文字的位置和角度。',
+    useCase:'💡 什麼時候用？做明信片加心情短語、在圖片上加標題、幫圖片加上你的簽名。',
+    lesson:'圖片5 已學' },
+  { id:'brush', cat:'creative', icon:'✏️', name:'畫筆 Brush',
+    desc:'像真的筆一樣在圖片上自由繪畫。可以調整畫筆的粗細、透明度和顏色。',
+    useCase:'💡 什麼時候用？在圖上畫圈圈標記重點、自由塗鴉裝飾、手繪你的專屬簽名。',
+    lesson:'圖片5B 新學' },
+  { id:'eraser', cat:'creative', icon:'🧹', name:'橡皮擦 Eraser',
+    desc:'擦掉圖片上不要的部分。如果是 PNG 格式，擦掉的地方會變成透明；如果是 JPG，會變成白色。',
+    useCase:'💡 什麼時候用？手動擦掉去背沒擦乾淨的小邊邊、擦掉圖片上不要的小瑕疵。',
+    lesson:'圖片5B 新學' },
+  { id:'select', cat:'creative', icon:'🔲', name:'選取工具',
+    desc:'在圖片上框選一個區域，可以用矩形或自由形狀選取。選取後可以複製、移動、刪除那塊區域。',
+    useCase:'💡 什麼時候用？想複製圖片中的某一小塊、只想對圖片的某個部分做修改、想把選取區域貼到別的地方。',
+    lesson:'圖片5B 新學' },
+  { id:'removebg', cat:'ai', icon:'🤖', name:'AI 去背 Remove BG',
+    desc:'超強的 AI 魔法！只要上傳圖片，AI 就會自動辨識主角，把背景整個移除掉，留下透明背景的主角。',
+    useCase:'💡 什麼時候用？想把人物或角色從背景中挖出來、要做合成圖片、想讓主角可以放到任何新背景上。',
+    lesson:'圖片2 已學' },
+  { id:'layers', cat:'ai', icon:'📑', name:'圖層 Layers',
+    desc:'像一疊透明的玻璃片疊在一起！每一層可以放不同的東西（主角、背景、文字），互不干擾，可以分別移動和編輯。',
+    useCase:'💡 什麼時候用？去背後把主角放到新背景上、同時在圖片上加文字和圖案但想分開管理。',
+    lesson:'圖片2 已學' }
+];
+
+const scenarios = [
+  { q:'📸 你用手機拍了一張漂亮的夕陽風景照，修完顏色後要存檔，該選什麼格式？', a:'JPG', hint:'風景照片適合用 JPG，檔案小又夠清楚！' },
+  { q:'✂️ 你用 Pixlr 把你的照片去背好了，要存檔保留透明背景，該選什麼格式？', a:'PNG', hint:'只有 PNG 可以保留透明背景！' },
+  { q:'🎬 你用 Canva 做了一個會動的表情貼圖，下載時該選什麼格式？', a:'GIF', hint:'會動的圖片就是 GIF！千萬別選成 MP4 喔！' },
+  { q:'🪪 你在 Canva 設計好了一張個人名片，要下載成圖片。該選什麼格式？', a:'JPG', hint:'名片是靜態平面圖片，用 JPG 檔案更小更方便傳送！' },
+  { q:'🎭 你想把去背好的角色放到新的背景上合成，去背圖要存成什麼格式？', a:'PNG', hint:'去背圖一定要存 PNG，才能保留透明背景用來合成！' },
+  { q:'📱 你從網路上找到一個會動的可愛柴犬，要下載下來，它是什麼格式？', a:'GIF', hint:'會動的圖片 = GIF！記得搜尋時要選「動態」類型。' },
+  { q:'💌 你修好了一張心情明信片，要上傳到 Classroom 繳交作業，該存什麼格式？', a:'JPG', hint:'明信片是靜態照片類的作品，用 JPG 最合適！' },
+  { q:'🖥️ 你用 Win+Shift+S 截了一張螢幕畫面，想保留最清晰的品質，該存什麼格式？', a:'PNG', hint:'截圖適合用 PNG，畫質最清晰！' }
+];
+
+const quizData = [
+  { q:'裁切工具（Crop）的功能是什麼？', opts:['把圖片變成黑白','剪掉圖片不需要的邊緣','讓圖片會動','在圖片上加文字'], ans:1, explain:'裁切就像剪紙，把不要的邊邊剪掉，只留下你想要的部分。' },
+  { q:'去背後的圖片應該存成哪種格式，才能保留透明背景？', opts:['JPG','MP4','PNG','GIF'], ans:2, explain:'只有 PNG 格式可以保存透明背景！JPG 會自動把透明填成白色。' },
+  { q:'調整圖片大小時，一定要記得勾選什麼？', opts:['自動儲存','鎖定比例','高畫質模式','黑白模式'], ans:1, explain:'如果沒有勾選「鎖定比例 🔒」，圖片就會被壓扁或拉寬，變形走樣！' },
+  { q:'會動的圖片（像 LINE 表情貼圖那種）是什麼格式？', opts:['JPG','PNG','PDF','GIF'], ans:3, explain:'GIF 格式可以儲存多張圖片輪播，就像翻頁動畫一樣讓圖片動起來！' },
+  { q:'想讓照片顏色更鮮豔，天空更藍、草地更綠，應該調整什麼？', opts:['裁切','飽和度','橡皮擦','旋轉'], ans:1, explain:'飽和度就是控制顏色的「鮮豔程度」，調高讓顏色更漂亮！' },
+  { q:'在 PNG 格式下，橡皮擦擦掉的部分會變成什麼？', opts:['白色','黑色','透明','紅色'], ans:2, explain:'在 PNG 格式下，橡皮擦擦掉的部分會變成透明（像玻璃一樣看得到後面）！' },
+  { q:'拍的風景照修完通常存成什麼格式最合適？', opts:['GIF','PNG','JPG','MP4'], ans:2, explain:'照片類的圖片最適合存成 JPG，因為檔案小又足夠清楚！口訣：照片 J！' },
+  { q:'想在圖片上寫一句話，應該用什麼工具？', opts:['裁切工具','橡皮擦','文字工具','選取工具'], ans:2, explain:'文字工具（T）可以在圖片上打字，還能選字體、大小和顏色！' },
+  { q:'想把圖片水平翻轉（左右相反），要用什麼功能？', opts:['裁切','旋轉與翻轉','調整大小','濾鏡'], ans:1, explain:'旋轉與翻轉功能可以把圖片轉方向或鏡像翻轉！' },
+  { q:'Pixlr 的 AI 去背功能可以做什麼？', opts:['讓圖片變大','自動移除圖片的背景','加上藝術文字','調整圖片亮度'], ans:1, explain:'AI 去背會自動辨識圖片中的主角，把背景整個擦掉，留下透明背景！' },
+  { q:'圖層（Layers）的概念就像什麼？', opts:['把很多張透明片疊在一起','把圖片剪成小塊','讓圖片會動','把圖片壓縮變小'], ans:0, explain:'圖層就像一疊透明玻璃片，每層放不同東西（主角、背景、文字），互不干擾！' },
+  { q:'照片太暗了看不清楚，應該調高什麼數值？', opts:['飽和度','亮度','裁切範圍','橡皮擦大小'], ans:1, explain:'亮度可以讓整張圖片變亮，把太暗的照片救回來！' },
+  { q:'以下哪一個「不是」Pixlr 的工具？', opts:['裁切','畫筆','投影片','橡皮擦'], ans:2, explain:'投影片是 Google 簡報（Slides）的功能，不是 Pixlr 修圖工具喔！' },
+  { q:'使用「選取工具」框選圖片的一部分後，按 Ctrl+C 再按 Ctrl+V 會怎樣？', opts:['圖片會被刪除','選取的部分被複製成新的一層','圖片會旋轉','圖片會存檔'], ans:1, explain:'Ctrl+C 是複製、Ctrl+V 是貼上，選取的區域會被複製成一個新圖層！' },
+  { q:'格式口訣「照片 J、去背 P、會動 G」，其中 P 代表什麼格式？', opts:['PDF','PPT','PNG','PSD'], ans:2, explain:'P 就是 PNG！去背圖一定要存 PNG 才能保留透明背景。照片 J(PG)、去背 P(NG)、會動 G(IF)！' }
+];
+
+const missions = [
+  { title:'認識所有 12 個 Pixlr 工具', desc:'點開第 1 關的全部 12 張工具卡片。', auto:true },
+  { title:'完成迷你修圖實驗室 4 項操作', desc:'在第 2 關實際體驗調色、變形、去背與加文字。', auto:true },
+  { title:'情境挑戰全部答對', desc:'完成第 3 關格式情境挑戰，8 題全數答對。', auto:true },
+  { title:'修圖測驗拿到 12 題以上', desc:'完成第 4 關 15 題綜合測驗，至少答對 12 題。', auto:true },
+  { title:'會用裁切工具', desc:'打開 Pixlr，把一張圖片裁切成正方形 (1:1)。' },
+  { title:'會調整圖片大小', desc:'在 Pixlr 中把圖片寬度調整為 800，記得鎖定比例！' },
+  { title:'會使用旋轉與翻轉', desc:'把一張圖片旋轉 90 度，再試試水平翻轉。' },
+  { title:'會使用畫筆和文字', desc:'用畫筆在圖片上畫圖案，用文字工具加上你的名字。' },
+  { title:'會使用 Win+Shift+S 截圖', desc:'使用 Windows 截圖工具截一張螢幕畫面並存檔。' },
+  { title:'正確存檔格式並交作業', desc:'下載成績單圖片並上傳到 Google Classroom。' }
+];
+
+// ===== STATE MANAGEMENT =====
+const STORAGE_KEY = 'pixlr_classroom_v2';
+let state = {
+  student: { cls: '', seat: '', name: '' },
+  exploredTools: [],
+  labTasks: { color: false, transform: false, removebg: false, text: false },
+  bestScenario: 0,
+  scenarioDone: false,
+  bestQuiz: 0,
+  quizDone: false,
+  bestQuizRecord: [], // boolean array of length 15
+  manualMissions: [],
+  soundOn: true
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      state = Object.assign(state, parsed);
+      state.student = Object.assign({ cls: '', seat: '', name: '' }, parsed.student || {});
+      state.labTasks = Object.assign({ color: false, transform: false, removebg: false, text: false }, parsed.labTasks || {});
+    }
+  } catch (e) {}
+}
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  updateAllUI();
+}
+
+// ===== WEB AUDIO SOUND FX =====
+let audioCtx = null;
+function playTone(type) {
+  if (!state.soundOn) return;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    if (type === 'correct') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, now);
+      osc.frequency.setValueAtTime(659.25, now + 0.08);
+      osc.frequency.setValueAtTime(783.99, now + 0.16);
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+      osc.start(now); osc.stop(now + 0.35);
+    } else if (type === 'wrong') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(220, now);
+      osc.frequency.linearRampToValueAtTime(150, now + 0.25);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+      osc.start(now); osc.stop(now + 0.28);
+    } else if (type === 'pop') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.exponentialRampToValueAtTime(700, now + 0.1);
+      gain.gain.setValueAtTime(0.14, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+      osc.start(now); osc.stop(now + 0.12);
+    } else if (type === 'fanfare') {
+      [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = 'triangle';
+        o.frequency.setValueAtTime(freq, now + i * 0.1);
+        g.gain.setValueAtTime(0.16, now + i * 0.1);
+        g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.35);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(now + i * 0.1); o.stop(now + i * 0.1 + 0.35);
+      });
+    }
+  } catch (e) {}
+}
+function toggleSound() {
+  state.soundOn = !state.soundOn;
+  document.getElementById('soundBtn').textContent = state.soundOn ? '🔊' : '🔇';
+  saveState();
+  showToast(state.soundOn ? '🔊 音效已開啟' : '🔇 音效已靜音');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+function scrollToId(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth' });
+}
+
+// ===== SCORE CALCULATION (100 POINTS TOTAL) =====
+function getScores() {
+  // Stage 1: 12 tools -> 10 pts
+  const toolPts = Math.round((state.exploredTools.length / tools.length) * 10);
+  // Stage 2: 4 lab tasks -> 10 pts
+  const labDoneCount = Object.values(state.labTasks).filter(Boolean).length;
+  const labPts = Math.round((labDoneCount / 4) * 10);
+  // Stage 3: 8 scenarios -> 20 pts (2.5 each)
+  const scenarioPts = Math.round((state.bestScenario / scenarios.length) * 20);
+  // Stage 4: 15 quiz -> 60 pts (4 each)
+  const quizPts = state.bestQuiz * 4;
+  const total = toolPts + labPts + scenarioPts + quizPts;
+  let grade = 'C', title = '修圖小萌新', stars = 1;
+  if (total >= 95) { grade = 'S'; title = '傳奇修圖大師'; stars = 5; }
+  else if (total >= 85) { grade = 'A+'; title = '超級修圖高手'; stars = 5; }
+  else if (total >= 75) { grade = 'A'; title = '優秀修圖達人'; stars = 4; }
+  else if (total >= 60) { grade = 'B'; title = '進步修圖見習生'; stars = 3; }
+  else if (total >= 30) { grade = 'B-'; title = '努力探索學徒'; stars = 2; }
+  return { toolPts, labPts, labDoneCount, scenarioPts, quizPts, total, grade, title, stars };
+}
+
+// ===== STUDENT INFO SYNC =====
+function startAdventure() {
+  state.student.cls = document.getElementById('stuClass').value.trim();
+  state.student.seat = document.getElementById('stuSeat').value.trim();
+  state.student.name = document.getElementById('stuName').value.trim();
+  if (!state.student.name) {
+    showToast('✏️ 請先輸入你的名字喔！');
+    document.getElementById('stuName').focus();
+    return;
+  }
+  playTone('pop');
+  saveState();
+  showToast(`🎉 歡迎 ${state.student.name}！開始第 1 關！`);
+  scrollToId('tools');
+}
+function syncStudentFromReport() {
+  state.student.cls = document.getElementById('repClass').value.trim();
+  state.student.seat = document.getElementById('repSeat').value.trim();
+  state.student.name = document.getElementById('repName').value.trim();
+  document.getElementById('stuClass').value = state.student.cls;
+  document.getElementById('stuSeat').value = state.student.seat;
+  document.getElementById('stuName').value = state.student.name;
+  saveState();
+}
+
+// ===== STAGE 1: TOOLS =====
+let currentCat = 'all';
+function renderTools(cat) {
+  currentCat = cat;
+  const grid = document.getElementById('toolsGrid');
+  const filtered = cat === 'all' ? tools : tools.filter(t => t.cat === cat);
+  grid.innerHTML = filtered.map(t => {
+    const explored = state.exploredTools.includes(t.id);
+    return `
+    <div class="tool-card cat-${t.cat} ${explored ? 'explored' : ''}" onclick="toggleToolCard(this, '${t.id}')">
+      <span class="explored-stamp">✅ 已學過</span>
+      <div class="tool-card-header">
+        <div class="tool-icon">${t.icon}</div>
+        <div>
+          <h3>${t.name}</h3>
+          <span class="tool-tag">${
+            t.cat==='basic'?'🔧 基礎操作':
+            t.cat==='color'?'🎨 調色修圖':
+            t.cat==='creative'?'✏️ 創意工具':'🤖 AI 魔法'
+          }</span>
+        </div>
+      </div>
+      <div class="expand-hint">👆 點擊展開說明（可得分）</div>
+      <div class="tool-card-body">
+        <p>${t.desc}</p>
+        <div class="use-case">${t.useCase}</div>
+        <span class="lesson-badge">📖 ${t.lesson}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+function toggleToolCard(el, id) {
+  el.classList.toggle('open');
+  if (!state.exploredTools.includes(id)) {
+    state.exploredTools.push(id);
+    el.classList.add('explored');
+    playTone('pop');
+    if (state.exploredTools.length === tools.length) {
+      playTone('fanfare');
+      launchConfetti();
+      showToast('🏆 第 1 關滿分！全部 12 個工具探索完成！');
+    }
+    saveState();
+  }
+}
+document.getElementById('catTabs').addEventListener('click', e => {
+  if (!e.target.classList.contains('cat-tab')) return;
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+  e.target.classList.add('active');
+  renderTools(e.target.dataset.cat);
+});
+
+// ===== STAGE 2: MINI PIXLR LAB =====
+const labState = {
+  bright: 100, contrast: 100, sat: 100,
+  rotate: 0, flip: false, crop: false, removebg: false,
+  filter: 'none', text: ''
+};
+function drawLabCanvas() {
+  const c = document.getElementById('labCanvas');
+  const ctx = c.getContext('2d');
+  const w = labState.crop ? 360 : 480;
+  const h = 360;
+  if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
+  document.getElementById('labSizeLabel').textContent = `尺寸：${w} × ${h}` + (labState.crop ? ' (1:1 正方形)' : '');
+  document.getElementById('labFormatLabel').textContent = labState.removebg ? 'PNG（透明去背！）' : 'JPG（含風景背景）';
+
+  ctx.clearRect(0, 0, w, h);
+  ctx.save();
+
+  // Filters
+  let fStr = `brightness(${labState.bright}%) contrast(${labState.contrast}%) saturate(${labState.sat}%)`;
+  if (labState.filter === 'bw') fStr += ' grayscale(100%)';
+  else if (labState.filter === 'vintage') fStr += ' sepia(65%) contrast(110%)';
+  else if (labState.filter === 'cool') fStr += ' hue-rotate(190deg) saturate(130%)';
+  ctx.filter = fStr;
+
+  // Transform around center
+  ctx.translate(w / 2, h / 2);
+  ctx.rotate((labState.rotate * Math.PI) / 180);
+  if (labState.flip) ctx.scale(-1, 1);
+
+  // Background (unless AI removebg is ON)
+  if (!labState.removebg) {
+    // Sky gradient
+    const sky = ctx.createLinearGradient(0, -180, 0, 100);
+    sky.addColorStop(0, '#4FACFE');
+    sky.addColorStop(1, '#A1F0FF');
+    ctx.fillStyle = sky;
+    ctx.fillRect(-260, -260, 520, 520);
+
+    // Sun
+    ctx.fillStyle = '#FFEAA7';
+    ctx.beginPath(); ctx.arc(135, -105, 36, 0, Math.PI * 2); ctx.fill();
+
+    // Clouds
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.beginPath();
+    ctx.arc(-130, -110, 22, 0, Math.PI*2);
+    ctx.arc(-105, -118, 28, 0, Math.PI*2);
+    ctx.arc(-80, -108, 20, 0, Math.PI*2);
+    ctx.fill();
+
+    // Mountains
+    ctx.fillStyle = '#55EFC4';
+    ctx.beginPath(); ctx.moveTo(-260, 80); ctx.lineTo(-90, -35); ctx.lineTo(80, 80); ctx.fill();
+    ctx.fillStyle = '#00B894';
+    ctx.beginPath(); ctx.moveTo(-20, 80); ctx.lineTo(130, -20); ctx.lineTo(260, 80); ctx.fill();
+
+    // Grass
+    ctx.fillStyle = '#2ECC71';
+    ctx.fillRect(-260, 75, 520, 200);
+  }
+
+  // Cute Mascot (Shiba / Cat character in center)
+  // Ears
+  ctx.fillStyle = '#F39C12';
+  ctx.beginPath(); ctx.moveTo(-55, -45); ctx.lineTo(-75, -105); ctx.lineTo(-15, -70); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(55, -45); ctx.lineTo(75, -105); ctx.lineTo(15, -70); ctx.fill();
+  ctx.fillStyle = '#FDEBD0';
+  ctx.beginPath(); ctx.moveTo(-50, -52); ctx.lineTo(-64, -90); ctx.lineTo(-26, -68); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(50, -52); ctx.lineTo(64, -90); ctx.lineTo(26, -68); ctx.fill();
+
+  // Body
+  ctx.fillStyle = '#F39C12';
+  ctx.beginPath(); ctx.ellipse(0, 65, 58, 52, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#FFF5E4';
+  ctx.beginPath(); ctx.ellipse(0, 72, 34, 36, 0, 0, Math.PI * 2); ctx.fill();
+
+  // Head
+  ctx.fillStyle = '#F39C12';
+  ctx.beginPath(); ctx.ellipse(0, -15, 72, 62, 0, 0, Math.PI * 2); ctx.fill();
+  // Face lower white
+  ctx.fillStyle = '#FFF5E4';
+  ctx.beginPath(); ctx.ellipse(0, 8, 54, 36, 0, 0, Math.PI * 2); ctx.fill();
+  // Eyes
+  ctx.fillStyle = '#2D3436';
+  ctx.beginPath(); ctx.arc(-26, -14, 7.5, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(26, -14, 7.5, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.beginPath(); ctx.arc(-28, -17, 2.5, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(24, -17, 2.5, 0, Math.PI * 2); ctx.fill();
+  // Blush
+  ctx.fillStyle = 'rgba(255,118,117,0.45)';
+  ctx.beginPath(); ctx.ellipse(-42, 4, 11, 6, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(42, 4, 11, 6, 0, 0, Math.PI * 2); ctx.fill();
+  // Nose & smile
+  ctx.fillStyle = '#2D3436';
+  ctx.beginPath(); ctx.ellipse(0, -2, 7, 5, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = '#2D3436'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.arc(-7, 6, 7, 0, Math.PI * 0.85); ctx.stroke();
+  ctx.beginPath(); ctx.arc(7, 6, 7, Math.PI * 0.15, Math.PI); ctx.stroke();
+
+  // Red scarf
+  ctx.fillStyle = '#E74C3C';
+  ctx.beginPath(); ctx.roundRect(-48, 34, 96, 18, 9); ctx.fill();
+
+  ctx.restore();
+
+  // Text overlay (not flipped/rotated so readable)
+  if (labState.text.trim()) {
+    ctx.save();
+    ctx.font = '900 26px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = 'rgba(0,0,0,0.75)';
+    ctx.strokeText(labState.text, w / 2, h - 24);
+    ctx.fillStyle = '#FDCB6E';
+    ctx.fillText(labState.text, w / 2, h - 24);
+    ctx.restore();
+  }
+}
+
+function markLabTask(key) {
+  if (!state.labTasks[key]) {
+    state.labTasks[key] = true;
+    playTone('pop');
+    const doneAll = Object.values(state.labTasks).every(Boolean);
+    if (doneAll) {
+      playTone('fanfare');
+      launchConfetti();
+      showToast('🧪 第 2 關滿分！你完成了所有修圖實驗任務！');
+    }
+    saveState();
+  }
+}
+function updateLab(trigger) {
+  labState.bright = document.getElementById('slBright').value;
+  labState.contrast = document.getElementById('slContrast').value;
+  labState.sat = document.getElementById('slSat').value;
+  labState.text = document.getElementById('labText').value;
+  document.getElementById('valBright').textContent = labState.bright + '%';
+  document.getElementById('valContrast').textContent = labState.contrast + '%';
+  document.getElementById('valSat').textContent = labState.sat + '%';
+  drawLabCanvas();
+  if (trigger === 'color') markLabTask('color');
+  if (trigger === 'text' && labState.text.trim().length > 0) markLabTask('text');
+}
+function labAction(act) {
+  if (act === 'rotate') {
+    labState.rotate = (labState.rotate + 90) % 360;
+    markLabTask('transform');
+  } else if (act === 'flip') {
+    labState.flip = !labState.flip;
+    document.getElementById('btnFlip').classList.toggle('active', labState.flip);
+    markLabTask('transform');
+  } else if (act === 'crop') {
+    labState.crop = !labState.crop;
+    document.getElementById('btnCrop').classList.toggle('active', labState.crop);
+    markLabTask('transform');
+  } else if (act === 'removebg') {
+    labState.removebg = !labState.removebg;
+    document.getElementById('btnRemoveBg').classList.toggle('active', labState.removebg);
+    markLabTask('removebg');
+  } else if (act === 'reset') {
+    labState.bright = 100; labState.contrast = 100; labState.sat = 100;
+    labState.rotate = 0; labState.flip = false; labState.crop = false;
+    labState.removebg = false; labState.filter = 'none'; labState.text = '';
+    document.getElementById('slBright').value = 100;
+    document.getElementById('slContrast').value = 100;
+    document.getElementById('slSat').value = 100;
+    document.getElementById('labText').value = '';
+    document.getElementById('valBright').textContent = '100%';
+    document.getElementById('valContrast').textContent = '100%';
+    document.getElementById('valSat').textContent = '100%';
+    ['btnFlip','btnCrop','btnRemoveBg'].forEach(id => document.getElementById(id).classList.remove('active'));
+    document.querySelectorAll('[data-filter]').forEach(b => b.classList.toggle('active', b.dataset.filter === 'none'));
+  }
+  playTone('pop');
+  drawLabCanvas();
+}
+function setLabFilter(f, btn) {
+  labState.filter = f;
+  document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  playTone('pop');
+  drawLabCanvas();
+  markLabTask('color');
+}
+
+// ===== STAGE 3: SCENARIO GAME =====
+let scenarioIdx = 0, scenarioCorrect = 0, scenarioCombo = 0;
+function loadScenario() {
+  const comboEl = document.getElementById('scenarioCombo');
+  comboEl.textContent = `🔥 連對 ${scenarioCombo} 題！`;
+  comboEl.classList.toggle('show', scenarioCombo >= 2);
+
+  if (scenarioIdx >= scenarios.length) {
+    state.scenarioDone = true;
+    if (scenarioCorrect > state.bestScenario) state.bestScenario = scenarioCorrect;
+    saveState();
+    document.getElementById('scenarioQ').textContent = `🏆 挑戰結束！本次答對 ${scenarioCorrect} / ${scenarios.length} 題（最高紀錄：${state.bestScenario} 題）`;
+    document.getElementById('scenarioOpts').style.display = 'none';
+    document.getElementById('scenarioNext').style.display = 'none';
+    document.getElementById('scenarioRestart').style.display = 'inline-block';
+    const fb = document.getElementById('scenarioFb');
+    fb.className = 'scenario-feedback correct';
+    fb.textContent = scenarioCorrect === scenarios.length
+      ? '🎉 滿分 20 分！你是格式小達人！'
+      : '👍 做得不錯！可以按下方按鈕再挑戰一次拿滿分！';
+    fb.style.display = 'block';
+    if (scenarioCorrect === scenarios.length) { playTone('fanfare'); launchConfetti(); }
+    return;
+  }
+  const s = scenarios[scenarioIdx];
+  document.getElementById('scenarioQ').textContent = `第 ${scenarioIdx+1}/${scenarios.length} 題：${s.q}`;
+  document.getElementById('scenarioFb').style.display = 'none';
+  document.getElementById('scenarioNext').style.display = 'none';
+  document.getElementById('scenarioRestart').style.display = 'none';
+  document.getElementById('scenarioOpts').style.display = 'flex';
+  document.querySelectorAll('.scenario-btn').forEach(b => { b.disabled = false; });
+  document.getElementById('scenarioScore').textContent = `本次答對：${scenarioCorrect} 題 ｜ 歷史最高：${state.bestScenario} / ${scenarios.length} 題`;
+}
+function checkScenario(ans) {
+  const s = scenarios[scenarioIdx];
+  const fb = document.getElementById('scenarioFb');
+  document.querySelectorAll('.scenario-btn').forEach(b => { b.disabled = true; });
+  if (ans === s.a) {
+    scenarioCorrect++;
+    scenarioCombo++;
+    playTone('correct');
+    fb.className = 'scenario-feedback correct';
+    fb.textContent = `✅ 正確！${s.hint}`;
+  } else {
+    scenarioCombo = 0;
+    playTone('wrong');
+    fb.className = 'scenario-feedback wrong';
+    fb.textContent = `❌ 答案是 ${s.a}！${s.hint}`;
+  }
+  fb.style.display = 'block';
+  document.getElementById('scenarioCombo').textContent = `🔥 連對 ${scenarioCombo} 題！`;
+  document.getElementById('scenarioCombo').classList.toggle('show', scenarioCombo >= 2);
+  document.getElementById('scenarioScore').textContent = `本次答對：${scenarioCorrect} 題 ｜ 歷史最高：${Math.max(state.bestScenario, scenarioCorrect)} / ${scenarios.length} 題`;
+  document.getElementById('scenarioNext').style.display = 'inline-block';
+}
+function nextScenario() { scenarioIdx++; loadScenario(); }
+function restartScenario() { scenarioIdx = 0; scenarioCorrect = 0; scenarioCombo = 0; loadScenario(); }
+
+// ===== STAGE 4: QUIZ =====
+let qIdx = 0, qScore = 0, qCombo = 0, qAnswers = [];
+function loadQuestion() {
+  if (qIdx >= quizData.length) { showResult(); return; }
+  const q = quizData[qIdx];
+  document.getElementById('qNumber').textContent = `第 ${qIdx+1} 題，共 ${quizData.length} 題（每題 4 分）`;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('quizFill').style.width = ((qIdx) / quizData.length * 100) + '%';
+  document.getElementById('quizProgressText').textContent = `${qIdx+1} / ${quizData.length}`;
+  const qc = document.getElementById('quizCombo');
+  qc.textContent = `🔥 連對 ${qCombo} 題！`;
+  qc.classList.toggle('show', qCombo >= 2);
+
+  const letters = ['A','B','C','D'];
+  document.getElementById('qOptions').innerHTML = q.opts.map((o,i) => `
+    <div class="quiz-option" onclick="selectAnswer(${i})">
+      <span class="opt-letter">${letters[i]}</span>
+      <span>${o}</span>
+    </div>
+  `).join('');
+  document.getElementById('qExplain').className = 'quiz-explain';
+  document.getElementById('qExplain').textContent = '';
+  document.getElementById('qNextBtn').className = 'quiz-next-btn';
+}
+function selectAnswer(idx) {
+  const q = quizData[qIdx];
+  const opts = document.querySelectorAll('.quiz-option');
+  opts.forEach((o,i) => {
+    if (i === q.ans) o.classList.add('correct');
+    else if (i === idx && idx !== q.ans) o.classList.add('wrong');
+    else o.classList.add('disabled');
+  });
+  const correct = idx === q.ans;
+  if (correct) { qScore++; qCombo++; playTone('correct'); }
+  else { qCombo = 0; playTone('wrong'); }
+  const qc = document.getElementById('quizCombo');
+  qc.textContent = `🔥 連對 ${qCombo} 題！`;
+  qc.classList.toggle('show', qCombo >= 2);
+
+  qAnswers.push({ q: q.q, correct, picked: q.opts[idx], answer: q.opts[q.ans] });
+  const ex = document.getElementById('qExplain');
+  ex.className = 'quiz-explain show ' + (correct ? 'correct-explain' : 'wrong-explain');
+  ex.textContent = (correct ? '✅ 答對了！' : '❌ 答錯了！正確答案是「' + q.opts[q.ans] + '」。') + ' ' + q.explain;
+  document.getElementById('qNextBtn').textContent = qIdx === quizData.length - 1 ? '查看測驗結果 🏆' : '下一題 ➡️';
+  document.getElementById('qNextBtn').className = 'quiz-next-btn show';
+}
+function nextQuestion() {
+  qIdx++;
+  if (qIdx >= quizData.length) showResult();
+  else loadQuestion();
+}
+function showResult() {
+  state.quizDone = true;
+  if (qScore >= state.bestQuiz) {
+    state.bestQuiz = qScore;
+    state.bestQuizRecord = qAnswers.map(a => a.correct);
+  }
+  saveState();
+
+  document.getElementById('quizCard').style.display = 'none';
+  document.getElementById('quizProgress').style.display = 'none';
+  const pct = qScore / quizData.length;
+  let emoji, title, msg, stars;
+  if (pct === 1) {
+    emoji = '🏆'; title = '滿分！超級修圖大師！';
+    msg = '太厲害了！15 題全對拿到 60 分滿分！快去第 5 關下載你的成績單交作業吧！'; stars = '⭐⭐⭐⭐⭐';
+    playTone('fanfare'); launchConfetti();
+  } else if (pct >= 0.8) {
+    emoji = '🌟'; title = '太棒了！修圖高手！';
+    msg = '表現非常優秀！你可以直接去下載成績單，也可以再挑戰一次拼滿分！'; stars = '⭐⭐⭐⭐';
+    playTone('fanfare');
+  } else if (pct >= 0.6) {
+    emoji = '👍'; title = '不錯喔！繼續努力！';
+    msg = '大部分觀念都有掌握了！看看答錯的題目，再挑戰一次分數會更高！'; stars = '⭐⭐⭐';
+  } else {
+    emoji = '💪'; title = '加油！回去複習一下！';
+    msg = '建議回到上方重新看工具圖鑑與格式教室，再來挑戰一次喔！'; stars = '⭐⭐';
+  }
+  const r = document.getElementById('quizResult');
+  r.innerHTML = `
+    <div class="result-emoji">${emoji}</div>
+    <div class="result-title">${title}</div>
+    <div style="font-size:1.8rem;letter-spacing:4px;">${stars}</div>
+    <div class="result-score">${qScore} / ${quizData.length} 題（${qScore * 4} / 60 分）</div>
+    <div style="font-size:0.88rem;color:var(--primary);font-weight:700;margin-bottom:10px;">
+      歷史最高紀錄：${state.bestQuiz} / ${quizData.length} 題（${state.bestQuiz * 4} 分）
+    </div>
+    <div class="result-msg">${msg}</div>
+    <details class="result-details">
+      <summary>📋 查看本次每題答題紀錄</summary>
+      ${qAnswers.map((a,i) => `
+        <div class="result-item ${a.correct?'ri-correct':'ri-wrong'}">
+          <span>${a.correct?'✅':'❌'}</span>
+          <span>第${i+1}題：${a.q}<br>
+          ${a.correct?'':'你的答案：'+a.picked+' ➜ 正確答案：'+a.answer}</span>
+        </div>
+      `).join('')}
+    </details>
+    <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn" style="background:#ECEFF4;color:#2D3436;box-shadow:none;" onclick="restartQuiz()">🔄 再挑戰一次</button>
+      <a href="#report" class="btn btn-success">🏆 前往第 5 關領取成績單 ➡️</a>
+    </div>
+  `;
+  r.className = 'quiz-result show';
+}
+function restartQuiz() {
+  qIdx = 0; qScore = 0; qCombo = 0; qAnswers = [];
+  document.getElementById('quizCard').style.display = '';
+  document.getElementById('quizProgress').style.display = '';
+  document.getElementById('quizResult').className = 'quiz-result';
+  loadQuestion();
+}
+
+// ===== MISSIONS =====
+function isMissionDone(idx) {
+  if (idx === 0) return state.exploredTools.length === tools.length;
+  if (idx === 1) return Object.values(state.labTasks).every(Boolean);
+  if (idx === 2) return state.bestScenario === scenarios.length;
+  if (idx === 3) return state.bestQuiz >= 12;
+  return state.manualMissions.includes(idx);
+}
+function renderMissions() {
+  const list = document.getElementById('missionList');
+  let doneCount = 0;
+  list.innerHTML = missions.map((m, i) => {
+    const checked = isMissionDone(i);
+    if (checked) doneCount++;
+    return `
+      <div class="mission-item ${checked ? 'checked' : ''}">
+        <div class="mission-check" onclick="${m.auto ? '' : `toggleMission(${i})`}" style="${m.auto ? 'cursor:default;' : ''}">
+          ${checked ? '✔' : ''}
+        </div>
+        <div class="mission-text">
+          <h4>${m.title} ${m.auto ? '<span class="auto-tag">自動檢核</span>' : ''}</h4>
+          <p>${m.desc}</p>
+        </div>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('missionCounter').textContent =
+    doneCount === missions.length
+      ? '🎉 太棒了！全部 10 項學習任務都完成了！'
+      : `已完成 ${doneCount} / ${missions.length} 項學習任務`;
+  return doneCount;
+}
+function toggleMission(i) {
+  if (state.manualMissions.includes(i)) state.manualMissions = state.manualMissions.filter(x => x !== i);
+  else { state.manualMissions.push(i); playTone('pop'); }
+  saveState();
+}
+
+// ===== REPORT CARD CANVAS GENERATOR =====
+function generateVerifyCode(name, total, dateStr) {
+  const str = `${name}|${total}|${dateStr}|PIXLR4`;
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return 'PX-' + Math.abs(hash).toString(36).toUpperCase().slice(0, 6).padStart(6, '0');
+}
+
+function drawReportCard(showMsg) {
+  const canvas = document.getElementById('reportCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = 900, H = 640;
+  const sc = getScores();
+  const missionDone = missions.filter((_, i) => isMissionDone(i)).length;
+
+  const cls = state.student.cls || '未填寫';
+  const seat = state.student.seat || '未填寫';
+  const name = state.student.name || '未填寫姓名';
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  const verifyCode = generateVerifyCode(name, sc.total, dateStr.slice(0,10));
+
+  // Background
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, W, H);
+
+  // Decorative outer border
+  ctx.strokeStyle = '#6C5CE7';
+  ctx.lineWidth = 10;
+  ctx.strokeRect(12, 12, W - 24, H - 24);
+  ctx.strokeStyle = '#FDCB6E';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(24, 24, W - 48, H - 48);
+
+  // Top header gradient banner
+  const grad = ctx.createLinearGradient(26, 26, W - 26, 130);
+  grad.addColorStop(0, '#667eea');
+  grad.addColorStop(1, '#764ba2');
+  ctx.fillStyle = grad;
+  ctx.fillRect(26, 26, W - 52, 112);
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = '900 32px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('🎨 Pixlr 修圖教室 — 學習成績單', 54, 82);
+
+  ctx.fillStyle = 'rgba(255,255,255,0.88)';
+  ctx.font = '500 17px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+  ctx.fillText('四年級電腦課互動評量報告（可上傳 Google Classroom 繳交）', 54, 114);
+
+  // Grade stamp on top right
+  ctx.save();
+  ctx.fillStyle = '#FDCB6E';
+  ctx.beginPath(); ctx.arc(W - 95, 82, 42, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#2D3436';
+  ctx.font = '900 34px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(sc.grade, W - 95, 94);
+  ctx.restore();
+
+  // Student info bar
+  ctx.fillStyle = '#F4F2FF';
+  ctx.beginPath(); ctx.roundRect(48, 156, W - 96, 62, 12); ctx.fill();
+  ctx.fillStyle = '#2D3436';
+  ctx.font = '700 20px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText(`班級：${cls}　　座號：${seat}　　姓名：${name}`, 70, 194);
+  ctx.fillStyle = '#636E72';
+  ctx.font = '500 15px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText(`完成時間：${dateStr}`, W - 68, 193);
+
+  // Left big score box
+  ctx.fillStyle = '#FFF9E6';
+  ctx.strokeStyle = '#FDCB6E';
+  ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.roundRect(48, 238, 260, 215, 16); ctx.fill(); ctx.stroke();
+
+  ctx.fillStyle = '#636E72';
+  ctx.font = '700 18px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('學習總分（滿分 100）', 178, 274);
+
+  ctx.fillStyle = '#E17055';
+  ctx.font = '900 76px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+  ctx.fillText(`${sc.total}`, 178, 356);
+
+  ctx.fillStyle = '#6C5CE7';
+  ctx.font = '900 20px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+  ctx.fillText(`🏅 ${sc.title}`, 178, 398);
+
+  ctx.font = '22px sans-serif';
+  ctx.fillText('⭐'.repeat(sc.stars), 178, 434);
+
+  // Right score breakdown bars
+  const items = [
+    { label: '第 1 關｜工具圖鑑探索', val: sc.toolPts, max: 10, note: `${state.exploredTools.length}/12 個`, color: '#00B894' },
+    { label: '第 2 關｜迷你修圖實驗室', val: sc.labPts, max: 10, note: `${sc.labDoneCount}/4 項`, color: '#00CEC9' },
+    { label: '第 3 關｜格式情境挑戰', val: sc.scenarioPts, max: 20, note: `最高 ${state.bestScenario}/8 題`, color: '#F39C12' },
+    { label: '第 4 關｜Pixlr 綜合測驗', val: sc.quizPts, max: 60, note: `最高 ${state.bestQuiz}/15 題`, color: '#6C5CE7' }
+  ];
+
+  items.forEach((it, idx) => {
+    const y = 244 + idx * 54;
+    ctx.fillStyle = '#2D3436';
+    ctx.font = '700 16px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(it.label, 336, y + 16);
+
+    ctx.fillStyle = '#636E72';
+    ctx.font = '700 15px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(`${it.note}（${it.val} / ${it.max} 分）`, W - 52, y + 16);
+
+    // Bar bg
+    ctx.fillStyle = '#ECEFF4';
+    ctx.beginPath(); ctx.roundRect(336, y + 25, W - 388, 14, 7); ctx.fill();
+    // Bar fill
+    const ratio = it.max > 0 ? it.val / it.max : 0;
+    if (ratio > 0) {
+      ctx.fillStyle = it.color;
+      ctx.beginPath(); ctx.roundRect(336, y + 25, Math.max(14, (W - 388) * ratio), 14, 7); ctx.fill();
+    }
+  });
+
+  // 15-question quiz dot summary
+  ctx.fillStyle = '#F8F9FC';
+  ctx.beginPath(); ctx.roundRect(48, 474, W - 96, 86, 12); ctx.fill();
+
+  ctx.fillStyle = '#2D3436';
+  ctx.font = '700 15px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('📝 綜合測驗 15 題作答狀況（綠=答對、紅=答錯、灰=尚未作答）：', 68, 502);
+
+  for (let i = 0; i < 15; i++) {
+    const cx = 82 + i * 52;
+    const cy = 532;
+    const rec = state.bestQuizRecord[i];
+    ctx.fillStyle = rec === true ? '#00B894' : (rec === false ? '#FF7675' : '#DFE6E9');
+    ctx.beginPath(); ctx.arc(cx, cy, 16, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = rec === undefined ? '#636E72' : '#FFFFFF';
+    ctx.font = '700 13px "Noto Sans TC", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(`${i + 1}`, cx, cy + 5);
+  }
+
+  // Bottom footer row
+  ctx.fillStyle = '#636E72';
+  ctx.font = '600 15px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText(`🎯 學習任務清單完成度：${missionDone} / ${missions.length} 項`, 52, 594);
+
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#6C5CE7';
+  ctx.font = '700 14px monospace';
+  ctx.fillText(`成績檢核碼：${verifyCode}`, W - 52, 594);
+
+  if (showMsg) showToast('✅ 成績單已更新！');
+}
+
+function downloadReportPNG() {
+  if (!state.student.name) {
+    showToast('⚠️ 請先填寫「姓名」再下載成績單喔！');
+    document.getElementById('repName').focus();
+    return;
+  }
+  drawReportCard(false);
+  const sc = getScores();
+  const cls = (state.student.cls || '班級').replace(/[\\/:*?"<>|]/g, '');
+  const seat = (state.student.seat || '座號').replace(/[\\/:*?"<>|]/g, '');
+  const name = state.student.name.replace(/[\\/:*?"<>|]/g, '');
+  const filename = `${cls}_${seat}_${name}_Pixlr成績單_${sc.total}分.png`;
+
+  const canvas = document.getElementById('reportCanvas');
+  const link = document.createElement('a');
+  link.download = filename;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+
+  // Auto-check last mission when downloaded
+  if (!state.manualMissions.includes(9)) {
+    state.manualMissions.push(9);
+    saveState();
+  }
+  playTone('fanfare');
+  launchConfetti();
+  showToast(`🎉 已下載：${filename}`);
+}
+
+function resetAllProgress() {
+  if (!confirm('確定要清除所有分數和進度，重新開始嗎？')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+
+// ===== UPDATE ALL UI & GUIDED HELPER =====
+let nextSuggestedId = 'tools';
+function updateAllUI() {
+  const sc = getScores();
+
+  // Nav pills
+  const stuLabel = state.student.name
+    ? `👤 ${state.student.cls ? state.student.cls + ' ' : ''}${state.student.name}`
+    : '👤 填寫姓名';
+  document.getElementById('navStudentPill').textContent = stuLabel;
+  document.getElementById('navScorePill').textContent = `⭐ ${sc.total} / 100 分`;
+  document.getElementById('overallProgress').style.width = sc.total + '%';
+  document.getElementById('soundBtn').textContent = state.soundOn ? '🔊' : '🔇';
+
+  // Roadmap & nav checkmarks
+  document.getElementById('rp-1').textContent = `${sc.toolPts} / 10 分`;
+  document.getElementById('rp-2').textContent = `${sc.labPts} / 10 分`;
+  document.getElementById('rp-3').textContent = `${sc.scenarioPts} / 20 分`;
+  document.getElementById('rp-4').textContent = `${sc.quizPts} / 60 分`;
+
+  const s1Done = state.exploredTools.length === tools.length;
+  const s2Done = sc.labDoneCount === 4;
+  const s3Done = state.scenarioDone;
+  const s4Done = state.quizDone;
+  document.getElementById('road-1').classList.toggle('done', s1Done);
+  document.getElementById('road-2').classList.toggle('done', s2Done);
+  document.getElementById('road-3').classList.toggle('done', s3Done);
+  document.getElementById('road-4').classList.toggle('done', s4Done);
+  document.getElementById('nav-tools').classList.toggle('completed', s1Done);
+  document.getElementById('nav-lab').classList.toggle('completed', s2Done);
+  document.getElementById('nav-formats').classList.toggle('completed', s3Done);
+  document.getElementById('nav-quiz').classList.toggle('completed', s4Done);
+
+  // Stage 1 explore bar
+  document.getElementById('exploreFill').style.width = (state.exploredTools.length / tools.length * 100) + '%';
+  document.getElementById('exploreText').textContent = `已探索 ${state.exploredTools.length} / ${tools.length} 個工具 (${sc.toolPts}/10分)`;
+
+  // Stage 2 lab checklist
+  ['color','transform','removebg','text'].forEach((k, i) => {
+    const el = document.getElementById('lt-' + k);
+    const done = state.labTasks[k];
+    el.classList.toggle('done', done);
+    const labels = [
+      '1. 拉動亮度、對比或飽和度滑桿',
+      '2. 試試看旋轉 90°、水平翻轉或裁切 1:1',
+      '3. 按下「AI 去背」，觀察透明背景棋盤格',
+      '4. 用文字工具在圖片上加上一句話'
+    ];
+    el.textContent = (done ? '✅ ' : '⬜ ') + labels[i];
+  });
+
+  // Report summary cards
+  document.getElementById('sumTools').textContent = `${sc.toolPts} / 10`;
+  document.getElementById('sumLab').textContent = `${sc.labPts} / 10`;
+  document.getElementById('sumScenario').textContent = `${sc.scenarioPts} / 20`;
+  document.getElementById('sumQuiz').textContent = `${sc.quizPts} / 60`;
+  document.getElementById('sumTotal').textContent = `${sc.total} 分（${sc.grade}）｜ 稱號：${sc.title}`;
+
+  // Missions
+  renderMissions();
+
+  // Draw live report card
+  drawReportCard(false);
+
+  // Smart Floating Guide Bar
+  const gText = document.getElementById('guideText');
+  const gBtn = document.getElementById('guideBtn');
+  if (!state.student.name) {
+    gText.textContent = '👋 第一步：先填寫班級、座號、姓名！';
+    gBtn.textContent = '去填姓名 ✏️';
+    nextSuggestedId = 'home';
+  } else if (!s1Done) {
+    gText.textContent = `🧰 第 1 關：還剩 ${tools.length - state.exploredTools.length} 張工具卡片還沒點開喔！`;
+    gBtn.textContent = '前往第 1 關 ➡️';
+    nextSuggestedId = 'tools';
+  } else if (!s2Done) {
+    gText.textContent = `🧪 第 2 關：到迷你修圖實驗室完成 ${4 - sc.labDoneCount} 個動手任務！`;
+    gBtn.textContent = '前往第 2 關 ➡️';
+    nextSuggestedId = 'lab';
+  } else if (!s3Done) {
+    gText.textContent = '🎮 第 3 關：完成 8 題圖片格式情境挑戰！';
+    gBtn.textContent = '前往第 3 關 ➡️';
+    nextSuggestedId = 'scenario';
+  } else if (!s4Done) {
+    gText.textContent = '📝 第 4 關：挑戰 15 題綜合測驗拿高分！';
+    gBtn.textContent = '前往第 4 關 ➡️';
+    nextSuggestedId = 'quiz';
+  } else {
+    gText.textContent = `🏆 全部關卡完成！目前 ${sc.total} 分，快去下載成績單交作業！`;
+    gBtn.textContent = '下載成績單 ⬇️';
+    nextSuggestedId = 'report';
+  }
+}
+function goNextSuggested() { scrollToId(nextSuggestedId); }
+
+// ===== CONFETTI =====
+function launchConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors = ['#6C5CE7','#00CEC9','#FDCB6E','#FF7675','#00B894','#E84393','#FD79A8'];
+  const pieces = Array.from({length:120}, () => ({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height - canvas.height,
+    w: Math.random()*10+5, h: Math.random()*6+3,
+    color: colors[Math.floor(Math.random()*colors.length)],
+    vx: Math.random()*4-2, vy: Math.random()*4+2,
+    rot: Math.random()*360, vr: Math.random()*10-5
+  }));
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.vy += 0.05;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI/180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+    });
+    frame++;
+    if (frame < 140) requestAnimationFrame(draw);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  draw();
+}
+
+// ===== SCROLL ACTIVE NAV =====
+window.addEventListener('scroll', () => {
+  const sections = ['tools','lab','formats','quiz','report'];
+  let current = '';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 130) current = id;
+  });
+  document.querySelectorAll('.nav-link').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+
+// ===== INIT =====
+loadState();
+document.getElementById('stuClass').value = state.student.cls;
+document.getElementById('stuSeat').value = state.student.seat;
+document.getElementById('stuName').value = state.student.name;
+document.getElementById('repClass').value = state.student.cls;
+document.getElementById('repSeat').value = state.student.seat;
+document.getElementById('repName').value = state.student.name;
+
+renderTools('all');
+drawLabCanvas();
+loadScenario();
+loadQuestion();
+updateAllUI();
+</script>
+</body>
+</html>
